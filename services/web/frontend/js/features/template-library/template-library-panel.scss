@@ -22,6 +22,98 @@
   max-width: 720px;
 }
 
+.template-library-form {
+  background: var(--bs-body-bg);
+}
+
+.template-library-form .form-label {
+  color: var(--bs-body-color);
+}
+
+.template-library-form .form-control,
+.template-library-form .form-select {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+}
+
+.template-library-form .form-control::placeholder {
+  color: var(--bs-secondary-color);
+}
+
+.template-library-form .form-control:focus {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-primary);
+}
+
+.template-library-form textarea.font-monospace {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.template-library-form-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.5rem -1rem -1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bs-body-bg);
+  border-top: 1px solid var(--bs-border-color);
+}
+
+.template-library-category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.75rem;
+}
+
+.template-library-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 999px;
+  background: var(--bs-tertiary-bg);
+  color: var(--bs-body-color);
+  font-size: 0.8125rem;
+}
+
+.template-library-category-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--bs-secondary-color);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.template-library-category-remove:hover {
+  color: var(--bs-body-color);
+}
+
+.template-library-panel .btn-outline-secondary {
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+}
+
+.template-library-panel .btn-outline-secondary:hover {
+  color: var(--bs-body-color);
+  background: var(--bs-tertiary-bg);
+}
+
 .template-library-form .form-label {
   font-size: 0.875rem;
   font-weight: 600;
