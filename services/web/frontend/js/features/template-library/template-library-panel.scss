@@ -4,30 +4,46 @@
 }
 
 .template-library-toolbar {
-  background: var(--bs-tertiary-bg);
+  background: var(--bs-body-bg);
   border-color: var(--bs-border-color) !important;
 }
 
-.template-library-item {
+.template-library-list {
   background: var(--bs-body-bg);
+}
+
+.template-library-item {
+  background: var(--bs-secondary-bg);
   border: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius);
+  border-radius: 0.5rem;
+  transition: border-color 120ms ease, background-color 120ms ease;
 }
 
 .template-library-item:hover {
   background: var(--bs-tertiary-bg);
+  border-color: color-mix(in srgb, var(--bs-primary) 45%, var(--bs-border-color));
+}
+
+.template-library-item .template-library-title {
+  color: var(--bs-body-color);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.template-library-item .template-library-description {
+  color: var(--bs-secondary-color);
+  line-height: 1.4;
 }
 
 .template-library-form {
   max-width: 720px;
-}
-
-.template-library-form {
   background: var(--bs-body-bg);
 }
 
 .template-library-form .form-label {
   color: var(--bs-body-color);
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 
 .template-library-form .form-control,
@@ -45,6 +61,7 @@
   background-color: var(--bs-body-bg);
   color: var(--bs-body-color);
   border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.15rem color-mix(in srgb, var(--bs-primary) 18%, transparent);
 }
 
 .template-library-form textarea.font-monospace {
@@ -65,6 +82,11 @@
   padding: 0.75rem 1rem;
   background: var(--bs-body-bg);
   border-top: 1px solid var(--bs-border-color);
+}
+
+.template-library-form-actions .btn-primary,
+.template-library-item .template-library-insert {
+  font-weight: 600;
 }
 
 .template-library-category-list {
@@ -112,20 +134,6 @@
 .template-library-panel .btn-outline-secondary:hover {
   color: var(--bs-body-color);
   background: var(--bs-tertiary-bg);
-}
-
-.template-library-form .form-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.template-library-form textarea.font-monospace {
-  font-size: 0.8125rem;
-  line-height: 1.5;
-}
-
-.template-library-panel .badge {
-  font-weight: 500;
 }
 
 .template-library-panel .dropdown-menu {
