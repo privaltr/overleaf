@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import '../template-library-panel.scss'
-import { Button, Dropdown, Form } from 'react-bootstrap'
+import { Button, ButtonGroup, Dropdown, Form } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-header'
 import getMeta from '@/utils/meta'
@@ -385,9 +385,6 @@ export default function TemplateLibraryPanel() {
     <div className="h-100 d-flex flex-column">
       <RailPanelHeader
         title={t('templates')}
-        actions={
-
-        }
       />
 
       <div className="p-3 border-bottom template-library-toolbar">
