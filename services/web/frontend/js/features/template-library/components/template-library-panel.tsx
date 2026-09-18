@@ -151,6 +151,7 @@ export default function TemplateLibraryPanel() {
         setTemplates(current => [saved, ...current])
       }
 
+      if (insertAfterSave) insertContent(saved.content)
       closeEditor()
     } catch (saveError) {
       setError(getUserFacingMessage(saveError) || 'Unable to save template.')
@@ -202,8 +203,8 @@ export default function TemplateLibraryPanel() {
 
   const insertContent = (content: string) => {
     window.dispatchEvent(
-      new CustomEvent('editor:insert-symbol', {
-        detail: { command: content },
+      new CustomEvent('ui:insert-template', {
+        detail: { content },
       })
     )
   }
