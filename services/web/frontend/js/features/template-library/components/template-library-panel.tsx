@@ -469,10 +469,10 @@ export default function TemplateLibraryPanel() {
         ) : (
           filteredTemplates.map(template => (
             <div className="template-library-item mb-3 p-3" key={template.id}>
-              <div className="fw-semibold text-truncate">{template.title}</div>
+              <div className="template-library-title text-truncate">{template.title}</div>
 
               {template.description && (
-                <div className="text-muted small mt-1">
+                <div className="template-library-description small mt-1">
                   {template.description}
                 </div>
               )}
@@ -480,7 +480,7 @@ export default function TemplateLibraryPanel() {
               {renderCategories(template.categories)}
 
               <div className="d-flex flex-wrap gap-2 mt-3">
-                <Button size="sm" onClick={() => insert(template)}>
+                <Button size="sm" className="template-library-insert" onClick={() => insert(template)}>
                   {t('insert')}
                 </Button>
                 <Button
