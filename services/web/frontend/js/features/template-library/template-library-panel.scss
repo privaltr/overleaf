@@ -331,3 +331,25 @@
 .template-library-card-action .template-library-action-toggle {
   min-width: 2rem;
 }
+
+.template-library-search-row .form-control {
+  flex: 0 1 160px;
+  width: 160px;
+  max-width: 160px;
+}
+
+.template-library-search-action .btn {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.template-library-card-action {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.template-library-card-action .btn {
+  margin: 0;
+}
