@@ -353,3 +353,47 @@
 .template-library-card-action .btn {
   margin: 0;
 }
+
+/* Match the IDE Search panel's compact rail layout. */
+.template-library-toolbar {
+  padding: 0.5rem !important;
+  background: var(--bg-primary-themed);
+}
+
+.template-library-search-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.template-library-search-row .form-control {
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  height: 2rem;
+}
+
+.template-library-search-action {
+  flex: 0 0 auto;
+}
+
+.template-library-search-action .btn {
+  height: 2rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.template-library-search-action .dropdown-toggle {
+  min-width: 2rem;
+}
+
+.template-library-toolbar > .dropdown {
+  margin-top: 0.375rem !important;
+}
+
+.template-library-toolbar > .dropdown > .btn {
+  height: 2rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
