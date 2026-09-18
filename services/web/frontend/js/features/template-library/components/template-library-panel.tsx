@@ -371,26 +371,10 @@ export default function TemplateLibraryPanel() {
             <div className="d-flex gap-2">
               <Button
                 variant="outline-primary"
-                onClick={() => {
-                  insertContent(draft.content)
-                  closeEditor()
-                }}
-                disabled={busy || !draft.content.trim()}
-              >
-                {t('insert')}
-              </Button>
-              <Button
-                variant="outline-primary"
                 onClick={() => save(true)}
                 disabled={busy || !draft.title.trim()}
               >
                 {busy ? 'Saving…' : 'Save & Insert'}
-              </Button>
-              <Button
-                onClick={() => save(false)}
-                disabled={busy || !draft.title.trim()}
-              >
-                {busy ? 'Saving…' : t('save')}
               </Button>
             </div>
           </div>
