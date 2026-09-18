@@ -221,7 +221,7 @@ export default function TemplateLibraryPanel() {
 
   if (draft) {
     return (
-      <div className="h-100 d-flex flex-column">
+      <div className="h-100 d-flex flex-column template-library-panel">
         <RailPanelHeader
           title={editingId ? 'Edit ' + t('template') : 'New ' + t('template')}
           actions={
@@ -236,7 +236,7 @@ export default function TemplateLibraryPanel() {
           }
         />
 
-        <div className="overflow-auto p-3">
+        <div className="overflow-auto p-3 template-library-form">
           <Form.Group className="mb-3">
             <Form.Label>{t('title')}</Form.Label>
             <Form.Control
@@ -377,7 +377,7 @@ export default function TemplateLibraryPanel() {
         }
       />
 
-      <div className="p-2 border-bottom">
+      <div className="p-3 border-bottom template-library-toolbar">
         <Form.Control
           type="search"
           value={query}
@@ -426,7 +426,7 @@ export default function TemplateLibraryPanel() {
         </Dropdown>
       </div>
 
-      <div className="overflow-auto flex-grow-1 p-2">
+      <div className="overflow-auto flex-grow-1 p-3 template-library-list">
         {error && <div className="alert alert-danger">{error}</div>}
 
         {filteredTemplates.length === 0 ? (
@@ -435,8 +435,8 @@ export default function TemplateLibraryPanel() {
           </div>
         ) : (
           filteredTemplates.map(template => (
-            <div className="border rounded p-2 mb-2" key={template.id}>
-              <div className="fw-semibold">{template.title}</div>
+            <div className="template-library-item mb-3 p-3" key={template.id}>
+              <div className="fw-semibold text-truncate">{template.title}</div>
 
               {template.description && (
                 <div className="text-muted small mt-1">
@@ -446,7 +446,7 @@ export default function TemplateLibraryPanel() {
 
               {renderCategories(template.categories)}
 
-              <div className="d-flex flex-wrap gap-1 mt-2">
+              <div className="d-flex flex-wrap gap-2 mt-3">
                 <Button size="sm" onClick={() => insert(template)}>
                   {t('insert')}
                 </Button>
