@@ -70,8 +70,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  const { params } = parseReq(req, idSchema)
-  const { body } = parseReq(req, { body: templateBodySchema })
+  const { params, body } = parseReq(req, updateRequestSchema)
   const userId = SessionManager.getLoggedInUserId(req.session)
   const template = await TemplateLibraryHandler.promises.update(
     userId,
