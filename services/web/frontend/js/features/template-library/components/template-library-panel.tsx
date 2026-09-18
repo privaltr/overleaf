@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import '../template-library-panel.scss'
-import { Button, Dropdown, Form } from 'react-bootstrap'
+import { Button, ButtonGroup, Dropdown, Form } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-header'
 import getMeta from '@/utils/meta'
@@ -461,30 +461,31 @@ export default function TemplateLibraryPanel() {
         ) : (
           filteredTemplates.map(template => (
             <div className="template-library-item mb-3 p-3" key={template.id}>
-              <div className="template-library-title text-truncate">{template.title}</div>
+              <div
+                className="template-library-title text-truncate"
+                title={template.description || template.title}
+              >
+                {template.title}
+              </div>
 
-              {template.description && (
-                <div className="template-library-description small mt-1">
-                  {template.description}
-                </div>
-              )}
-
-              {renderCategories(template.categories)}
-
-              <div className="d-flex flex-wrap gap-2 mt-3">
-                <Button size="sm" className="template-library-insert" onClick={() => insert(template)}>
-                  {t('insert')}
-                </Button>
-                <Dropdown>
-                  <Dropdown.Toggle
-                    as="button"
+              <div className="d-flex justify-content-end mt-2">
+                <Dropdown as={ButtonGroup}>
+                  <Button
                     size="sm"
-                    variant="link"
-                    className="template-library-edit-menu"
+                    variant="success"
+                    className="template-library-insert"
+                    onClick={() => insert(template)}
                   >
-                    {t('edit')}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
+                    {t('insert')}
+                  </Button>
+                  <Dropdown.Toggle
+                    split
+                    size="sm"
+                    variant="success"
+                    className="template-library-action-toggle"
+                    aria-label={t('templateActions')}
+                  />
+                  <Dropdown.Menu align="end">
                     <Dropdown.Item onClick={() => startEdit(template)}>
                       {t('edit')}
                     </Dropdown.Item>
