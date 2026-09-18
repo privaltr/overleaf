@@ -366,6 +366,20 @@ export default function TemplateLibraryPanel() {
             <div className="d-flex gap-2">
               <Button
                 variant="outline-primary"
+                onClick={() => {
+                  window.dispatchEvent(
+                    new CustomEvent('ui:insert-template', {
+                      detail: { content: draft.content },
+                    })
+                  )
+                  closeEditor()
+                }}
+                disabled={busy || !draft.content.trim()}
+              >
+                {t('insert')}
+              </Button>
+              <Button
+                variant="outline-primary"
                 onClick={() => save(true)}
                 disabled={busy || !draft.title.trim()}
               >
