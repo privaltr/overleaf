@@ -39,6 +39,13 @@ const idSchema = z.object({
   }),
 })
 
+const updateRequestSchema = z.object({
+  params: z.strictObject({
+    templateId: zz.objectId(),
+  }),
+  body: templateBodySchema,
+})
+
 const serialize = template => ({
   id: template._id.toString(),
   title: template.title,
