@@ -212,16 +212,6 @@ export default function TemplateLibraryPanel() {
     insertContent(template.content)
   }
 
-  const renderCategories = (values: string[]) => (
-    <div className="d-flex flex-wrap gap-1 mt-1">
-      {values.map(value => (
-        <span className="template-library-category" key={value}>
-          {value}
-        </span>
-      ))}
-    </div>
-  )
-
   if (anonymous) return null
 
   if (draft) {
@@ -504,7 +494,7 @@ export default function TemplateLibraryPanel() {
               </div>
 
             </div>
-          ))))
+          ))
         )}
       </div>
     </div>
