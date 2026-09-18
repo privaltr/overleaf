@@ -477,7 +477,7 @@ export default function TemplateLibraryPanel() {
                   {template.title}
                 </div>
 
-                <Dropdown className="template-library-card-action">
+                <Dropdown as={ButtonGroup} className="template-library-card-action">
                   <Button
                     size="sm"
                     variant="success"
