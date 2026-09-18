@@ -386,20 +386,41 @@ export default function TemplateLibraryPanel() {
       <RailPanelHeader
         title={t('templates')}
         actions={
-          <Button variant="primary" size="sm" onClick={startCreate}>
-            {t('new')}
-          </Button>
+
         }
       />
 
       <div className="p-3 border-bottom template-library-toolbar">
-        <Form.Control
-          type="search"
-          value={query}
-          onChange={event => setQuery(event.target.value)}
-          placeholder="Search templates"
-          aria-label="Search templates"
-        />
+        <div className="template-library-search-row">
+          <Form.Control
+            type="search"
+            value={query}
+            onChange={event => setQuery(event.target.value)}
+            placeholder="Search templates"
+            aria-label="Search templates"
+          />
+
+          <Dropdown as={ButtonGroup} className="template-library-search-action">
+            <Button
+              variant="success"
+              size="sm"
+              onClick={() => setQuery(query.trim())}
+            >
+              Search
+            </Button>
+            <Dropdown.Toggle
+              split
+              variant="success"
+              size="sm"
+              aria-label="Template actions"
+            />
+            <Dropdown.Menu align="end">
+              <Dropdown.Item onClick={startCreate}>
+                {t('new')}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
 
         <Dropdown autoClose="outside" className="mt-2">
           <Dropdown.Toggle variant="outline-secondary" size="sm">
