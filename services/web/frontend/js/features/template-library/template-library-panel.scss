@@ -30,11 +30,6 @@
   font-weight: 600;
 }
 
-.template-library-item .template-library-description {
-  color: var(--content-color-secondary);
-  line-height: 1.4;
-}
-
 .template-library-form {
   max-width: 720px;
   background: var(--bg-primary-themed);
@@ -96,18 +91,6 @@
   margin-top: 0.75rem;
 }
 
-.template-library-category {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--border-color-themed);
-  border-radius: 999px;
-  background: var(--bg-secondary-themed);
-  color: var(--content-color);
-  font-size: 0.8125rem;
-}
-
 .template-library-category-remove {
   display: inline-flex;
   align-items: center;
@@ -149,29 +132,6 @@
   color: var(--content-color-secondary);
   font-size: 0.75rem;
   line-height: 1.2;
-}
-
-.template-library-edit-menu {
-  padding: 0.25rem 0.5rem;
-  border: 0;
-  border-radius: 0.25rem;
-  background: transparent !important;
-  color: var(--content-color) !important;
-  text-decoration: none;
-  box-shadow: none !important;
-}
-
-.template-library-edit-menu:hover,
-.template-library-edit-menu:focus,
-.template-library-edit-menu:active {
-  background: var(--bg-tertiary-themed) !important;
-  color: var(--content-color) !important;
-  text-decoration: none;
-}
-
-.template-library-edit-menu::after {
-  margin-left: 0.35rem;
-  vertical-align: 0.15em;
 }
 
 .template-library-panel .dropdown-menu {
@@ -233,4 +193,48 @@
 .template-library-panel .template-library-delete-item:focus {
   color: var(--error-color, #d9534f);
   background: var(--bg-tertiary-themed);
+}
+
+.template-library-insert {
+  font-weight: 600;
+}
+
+.template-library-action-toggle {
+  min-width: 2rem;
+}
+
+.template-library-panel .dropdown-menu {
+  color: var(--content-color);
+  background: var(--bg-secondary-themed);
+  border-color: var(--border-color-themed);
+  font-size: 0.875rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+
+.template-library-panel .dropdown-item {
+  color: var(--content-color);
+}
+
+.template-library-panel .dropdown-item:hover,
+.template-library-panel .dropdown-item:focus {
+  color: var(--content-color);
+  background: var(--bg-tertiary-themed);
+}
+
+.template-library-panel .form-check-label {
+  color: var(--content-color);
+}
+
+.template-library-panel .template-library-delete-item {
+  color: var(--error-color, #d9534f);
+}
+
+.template-library-panel .template-library-delete-item:hover,
+.template-library-panel .template-library-delete-item:focus {
+  color: var(--error-color, #d9534f);
+  background: var(--bg-tertiary-themed);
+}
+
+.template-library-panel .alert {
+  font-size: 0.875rem;
 }
