@@ -254,3 +254,26 @@
 .template-library-card-action {
   flex: 0 0 auto;
 }
+
+.template-library-search-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.template-library-search-row .form-control {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.template-library-search-action {
+  flex: 0 0 auto;
+}
+
+.template-library-search-action .btn-success {
+  font-weight: 600;
+}
+
+.template-library-search-action .dropdown-toggle {
+  min-width: 2rem;
+}
