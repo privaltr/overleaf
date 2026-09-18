@@ -508,6 +508,7 @@ export default function TemplateLibraryPanel() {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
+                </div>
               </div>
             </div>
           ))
