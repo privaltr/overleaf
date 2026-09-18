@@ -130,7 +130,7 @@ export default function TemplateLibraryPanel() {
     })
   }
 
-  const save = async () => {
+  const save = async (insertAfterSave = false) => {
     if (!draft || !draft.title.trim()) return
 
     setBusy(true)
@@ -267,8 +267,8 @@ export default function TemplateLibraryPanel() {
             />
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>{t('categories')}</Form.Label>
+          <Form.Group className="mb-4">
+            <Form.Label className="template-library-field-label">{t('categories')}</Form.Label>
             <div className="d-flex gap-2 mb-2">
               <Form.Control
                 value={categoryInput}
@@ -318,19 +318,20 @@ export default function TemplateLibraryPanel() {
               </Dropdown>
             </div>
 
-            {renderCategories(draft.categories)}
-            <div className="d-flex flex-wrap gap-1 mt-1">
+            <div className="template-library-category-list" aria-live="polite">
               {draft.categories.map(category => (
-                <Button
-                  key={category}
-                  variant="link"
-                  size="sm"
-                  className="p-0"
-                  onClick={() => removeCategory(category)}
-                  disabled={busy}
-                >
-                  Remove {category}
-                </Button>
+                <span className="template-library-category" key={category}>
+                  <span>{category}</span>
+                  <button
+                    type="button"
+                    className="template-library-category-remove"
+                    onClick={() => removeCategory(category)}
+                    disabled={busy}
+                    aria-label={`Remove ${category}`}
+                  >
+                    ×
+                  </button>
+                </span>
               ))}
             </div>
           </Form.Group>
@@ -354,13 +355,29 @@ export default function TemplateLibraryPanel() {
 
           {error && <div className="alert alert-danger">{error}</div>}
 
-          <div className="d-flex justify-content-end">
+          <div className="template-library-form-actions">
             <Button
-              onClick={save}
-              disabled={busy || !draft.title.trim()}
+              variant="outline-secondary"
+              onClick={closeEditor}
+              disabled={busy}
             >
-              {busy ? 'Saving…' : t('save')}
+              {t('cancel')}
             </Button>
+            <div className="d-flex gap-2">
+              <Button
+                variant="outline-primary"
+                onClick={() => save(true)}
+                disabled={busy || !draft.title.trim()}
+              >
+                {busy ? 'Saving…' : 'Save & Insert'}
+              </Button>
+              <Button
+                onClick={() => save(false)}
+                disabled={busy || !draft.title.trim()}
+              >
+                {busy ? 'Saving…' : t('save')}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
