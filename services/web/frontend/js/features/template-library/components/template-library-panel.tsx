@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import '../template-library-panel.scss'
-import { Button, ButtonGroup, Dropdown, Form } from 'react-bootstrap'
+import { Button, ButtonGroup, Dropdown, Form, Col, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-header'
+import OLFormControl from '@/shared/components/ol/ol-form-control'
+import OLButton from '@/shared/components/ol/ol-button'
 import getMeta from '@/utils/meta'
 import { getUserFacingMessage } from '../../../infrastructure/fetch-json'
 import {
@@ -387,40 +389,44 @@ export default function TemplateLibraryPanel() {
         title={t('templates')}
       />
 
-      <div className="p-3 border-bottom template-library-toolbar">
-        <div className="template-library-search-row">
-          <Form.Control
-            type="search"
-            value={query}
-            onChange={event => setQuery(event.target.value)}
-            placeholder="Search templates"
-            aria-label="Search templates"
-            size="sm"
-          />
-
-          <Dropdown as={ButtonGroup} className="template-library-search-action">
-            <Button
-              variant="success"
+      <div className="border-bottom template-library-toolbar">
+        <Row className="g-1">
+          <Col>
+            <OLFormControl
+              type="search"
+              value={query}
+              onChange={event => setQuery(event.target.value)}
+              placeholder="Search templates"
+              aria-label="Search templates"
               size="sm"
-              onClick={() => setQuery(query.trim())}
-            >
-              Search
-            </Button>
-            <Dropdown.Toggle
-              split
-              variant="success"
-              size="sm"
-              aria-label="Template actions"
             />
-            <Dropdown.Menu align="end">
-              <Dropdown.Item onClick={startCreate}>
-                {t('new')}
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
+          </Col>
+          <Col className="col-auto">
+            <Dropdown as={ButtonGroup}>
+              <OLButton
+                type="button"
+                className="btn btn-primary"
+                size="sm"
+                onClick={() => setQuery(query.trim())}
+              >
+                Search
+              </OLButton>
+              <Dropdown.Toggle
+                split
+                className="btn btn-primary"
+                size="sm"
+                aria-label="Template actions"
+              />
+              <Dropdown.Menu align="end">
+                <Dropdown.Item onClick={startCreate}>
+                  {t('new')}
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Col>
+        </Row>
 
-        <Dropdown autoClose="outside" className="mt-2">
+        <Dropdown autoClose="outside" className="mt-1">
           <Dropdown.Toggle variant="outline-secondary" size="sm">
             {categoriesFilter.length > 0
               ? 'Categories (' + categoriesFilter.length + ')'
