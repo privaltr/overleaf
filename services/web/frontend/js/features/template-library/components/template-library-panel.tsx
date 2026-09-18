@@ -468,8 +468,15 @@ export default function TemplateLibraryPanel() {
                 {template.title}
               </div>
 
-              <div className="d-flex justify-content-end mt-2">
-                <Dropdown as={ButtonGroup}>
+              <div className="d-flex align-items-center justify-content-between gap-2 mt-2">
+                {template.categories.length > 0 ? (
+                  <div className="template-library-category-list">
+                    {renderCategories(template.categories)}
+                  </div>
+                ) : (
+                  <div />
+                )}
+                <Dropdown as={ButtonGroup} className="flex-shrink-0">
                   <Button
                     size="sm"
                     variant="success"
