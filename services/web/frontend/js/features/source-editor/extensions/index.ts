@@ -60,6 +60,7 @@ import { tooltipsReposition } from './tooltips-reposition'
 import { selectionListener } from '@/features/source-editor/extensions/selection-listener'
 import { contextMenu } from './context-menu'
 import { tabsListener } from './tabs-listener'
+import { templateInsertion } from '@/features/template-library/extension'
 
 const moduleExtensions: Array<(options: Record<string, any>) => Extension> =
   importOverleafModules('sourceEditorExtensions').map(
