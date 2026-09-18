@@ -116,6 +116,12 @@ export const RailLayout = () => {
         hide: !hasFullProjectSearch,
       },
       {
+        key: 'template-library',
+        icon: 'content_copy',
+        title: t('templates'),
+        component: <TemplateLibraryPanel />,
+      },
+      {
         key: 'integrations',
         icon: 'integration_instructions',
         title: t('integrations'),
