@@ -373,3 +373,21 @@
 .template-library-toolbar > .dropdown {
   margin-top: 4px !important;
 }
+
+/* Categories filter: match the light/hovered Overleaf control. */
+.template-library-toolbar > .dropdown > .dropdown-toggle {
+  color: #212529;
+  background: #fff;
+  border-color: #fff;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.template-library-toolbar > .dropdown > .dropdown-toggle:hover,
+.template-library-toolbar > .dropdown > .dropdown-toggle:focus,
+.template-library-toolbar > .dropdown > .dropdown-toggle:active,
+.template-library-toolbar > .dropdown.show > .dropdown-toggle {
+  color: #212529;
+  background: #fff;
+  border-color: #fff;
+  opacity: 0.75;
+}
