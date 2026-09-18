@@ -185,4 +185,5 @@ export const createExtensions = (options: Record<string, any>): Extension[] => [
   tooltipsReposition(),
   selectionListener(options.setEditorSelection),
   tabsListener(options.settings.editorTabs),
+  templateInsertion(),
 ]
