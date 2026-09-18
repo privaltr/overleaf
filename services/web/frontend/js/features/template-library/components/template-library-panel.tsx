@@ -395,6 +395,7 @@ export default function TemplateLibraryPanel() {
             onChange={event => setQuery(event.target.value)}
             placeholder="Search templates"
             aria-label="Search templates"
+            size="sm"
           />
 
           <Dropdown as={ButtonGroup} className="template-library-search-action">
