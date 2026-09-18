@@ -215,7 +215,7 @@ export default function TemplateLibraryPanel() {
   const renderCategories = (values: string[]) => (
     <div className="d-flex flex-wrap gap-1 mt-1">
       {values.map(value => (
-        <span className="badge bg-secondary" key={value}>
+        <span className="template-library-category" key={value}>
           {value}
         </span>
       ))}
@@ -475,27 +475,31 @@ export default function TemplateLibraryPanel() {
                 <Button size="sm" className="template-library-insert" onClick={() => insert(template)}>
                   {t('insert')}
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline-secondary"
-                  onClick={() => startEdit(template)}
-                >
-                  {t('edit')}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline-secondary"
-                  onClick={() => duplicate(template)}
-                >
-                  {t('duplicate')}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline-danger"
-                  onClick={() => remove(template)}
-                >
-                  {t('delete')}
-                </Button>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    as="button"
+                    size="sm"
+                    variant="link"
+                    className="template-library-edit-menu"
+                  >
+                    {t('edit')}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => startEdit(template)}>
+                      {t('edit')}
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => duplicate(template)}>
+                      {t('duplicate')}
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item
+                      className="template-library-delete-item"
+                      onClick={() => remove(template)}
+                    >
+                      {t('delete')}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             </div>
           ))
