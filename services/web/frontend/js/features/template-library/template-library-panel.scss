@@ -277,3 +277,16 @@
 .template-library-search-action .dropdown-toggle {
   min-width: 2rem;
 }
+
+.template-library-card-action {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.template-library-card-action > .btn {
+  margin: 0;
+}
+
+.template-library-card-action > .dropdown-menu {
+  margin-top: 0.25rem;
+}
