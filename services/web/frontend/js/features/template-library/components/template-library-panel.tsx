@@ -130,7 +130,7 @@ export default function TemplateLibraryPanel() {
     })
   }
 
-  const save = async (insertAfterSave = false) => {
+  const save = async () => {
     if (!draft || !draft.title.trim()) return
 
     setBusy(true)
@@ -151,7 +151,6 @@ export default function TemplateLibraryPanel() {
         setTemplates(current => [saved, ...current])
       }
 
-      if (insertAfterSave) insertContent(saved.content)
       closeEditor()
     } catch (saveError) {
       setError(getUserFacingMessage(saveError) || 'Unable to save template.')
@@ -371,10 +370,19 @@ export default function TemplateLibraryPanel() {
             <div className="d-flex gap-2">
               <Button
                 variant="outline-primary"
-                onClick={() => save(true)}
+                onClick={() => {
+                  insertContent(draft.content)
+                  closeEditor()
+                }}
+                disabled={busy || !draft.content.trim()}
+              >
+                {t('insert')}
+              </Button>
+              <Button
+                onClick={() => save()}
                 disabled={busy || !draft.title.trim()}
               >
-                {busy ? 'Saving…' : 'Save & Insert'}
+                {busy ? 'Saving…' : t('save')}
               </Button>
             </div>
           </div>
