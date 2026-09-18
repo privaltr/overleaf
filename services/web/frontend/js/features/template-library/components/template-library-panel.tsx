@@ -461,22 +461,15 @@ export default function TemplateLibraryPanel() {
         ) : (
           filteredTemplates.map(template => (
             <div className="template-library-item mb-3 p-3" key={template.id}>
-              <div
-                className="template-library-title text-truncate"
-                title={template.description || template.title}
-              >
-                {template.title}
-              </div>
+              <div className="template-library-card-row">
+                <div
+                  className="template-library-title text-truncate"
+                  title={template.description || template.title}
+                >
+                  {template.title}
+                </div>
 
-              <div className="d-flex align-items-center justify-content-between gap-2 mt-2">
-                {template.categories.length > 0 ? (
-                  <div className="template-library-category-list">
-                    {renderCategories(template.categories)}
-                  </div>
-                ) : (
-                  <div />
-                )}
-                <Dropdown as={ButtonGroup} className="flex-shrink-0">
+                <Dropdown as={ButtonGroup} className="template-library-card-action">
                   <Button
                     size="sm"
                     variant="success"
@@ -490,7 +483,7 @@ export default function TemplateLibraryPanel() {
                     size="sm"
                     variant="success"
                     className="template-library-action-toggle"
-                    aria-label={t('templateActions')}
+                    aria-label="Template actions"
                   />
                   <Dropdown.Menu align="end">
                     <Dropdown.Item onClick={() => startEdit(template)}>
@@ -508,10 +501,15 @@ export default function TemplateLibraryPanel() {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                </div>
               </div>
+
+              {template.categories.length > 0 && (
+                <div className="template-library-category-list">
+                  {renderCategories(template.categories)}
+                </div>
+              )}
             </div>
-          ))
+          ))))
         )}
       </div>
     </div>
