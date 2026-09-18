@@ -29,6 +29,10 @@ const templateBodySchema = z.strictObject({
   categories: categoriesSchema,
 })
 
+const templateRequestSchema = z.object({
+  body: templateBodySchema,
+})
+
 const idSchema = z.object({
   params: z.strictObject({
     templateId: zz.objectId(),
@@ -52,7 +56,7 @@ async function getAll(req, res) {
 }
 
 async function create(req, res) {
-  const { body } = parseReq(req, { body: templateBodySchema })
+  const { body } = parseReq(req, templateRequestSchema)
   const userId = SessionManager.getLoggedInUserId(req.session)
   const template = await TemplateLibraryHandler.promises.create(userId, body)
   res.status(201).json(serialize(template))
