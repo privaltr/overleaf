@@ -397,3 +397,57 @@
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
 }
+
+/* Keep the template search controls aligned with the IDE search panel. */
+.template-library-toolbar {
+  padding: 8px !important;
+  background: var(--bg-primary-themed);
+}
+
+.template-library-search-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.template-library-search-row .form-control {
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  height: 34px;
+  padding: 0.25rem 0.5rem;
+}
+
+.template-library-search-action {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 68px;
+  height: 34px;
+}
+
+.template-library-search-action > .btn {
+  height: 34px;
+  padding: 0.25rem 0.5rem;
+}
+
+.template-library-search-action > .btn:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.template-library-search-action > .dropdown-toggle {
+  flex: 0 0 22px;
+  min-width: 22px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.template-library-toolbar > .dropdown {
+  margin-top: 4px !important;
+}
+
+.template-library-toolbar > .dropdown > .btn {
+  height: 26px;
+  padding: 0.125rem 0.5rem;
+}
