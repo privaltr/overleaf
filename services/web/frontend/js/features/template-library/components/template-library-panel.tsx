@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import '../template-library-panel.scss'
-import { Button, ButtonGroup, Dropdown, Form } from 'react-bootstrap'
+import { Button, Dropdown, Form } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-header'
 import getMeta from '@/utils/meta'
@@ -480,7 +480,7 @@ export default function TemplateLibraryPanel() {
                   {template.title}
                 </div>
 
-                <Dropdown as={ButtonGroup} className="template-library-card-action">
+                <Dropdown className="template-library-card-action">
                   <Button
                     size="sm"
                     variant="success"
