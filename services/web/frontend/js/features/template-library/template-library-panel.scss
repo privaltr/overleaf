@@ -1,72 +1,72 @@
 .template-library-panel {
-  color: var(--bs-body-color);
-  background: var(--bs-body-bg);
+  color: var(--content-color);
+  background: var(--bg-primary-themed);
 }
 
 .template-library-toolbar {
-  background: var(--bs-body-bg);
-  border-color: var(--bs-border-color) !important;
+  background: var(--bg-secondary-themed);
+  border-color: var(--border-color-themed) !important;
 }
 
 .template-library-list {
-  background: var(--bs-body-bg);
+  background: var(--bg-primary-themed);
 }
 
 .template-library-item {
-  background: var(--bs-secondary-bg);
-  border: 1px solid var(--bs-border-color);
+  background: var(--bg-secondary-themed);
+  border: 1px solid var(--border-color-themed);
   border-radius: 0.5rem;
   transition: border-color 120ms ease, background-color 120ms ease;
 }
 
 .template-library-item:hover {
-  background: var(--bs-tertiary-bg);
-  border-color: color-mix(in srgb, var(--bs-primary) 45%, var(--bs-border-color));
+  background: var(--bg-tertiary-themed);
+  border-color: var(--link-color-themed);
 }
 
 .template-library-item .template-library-title {
-  color: var(--bs-body-color);
+  color: var(--content-color);
   font-size: 0.9375rem;
   font-weight: 600;
 }
 
 .template-library-item .template-library-description {
-  color: var(--bs-secondary-color);
+  color: var(--content-color-secondary);
   line-height: 1.4;
 }
 
 .template-library-form {
   max-width: 720px;
-  background: var(--bs-body-bg);
+  background: var(--bg-primary-themed);
 }
 
 .template-library-form .form-label {
-  color: var(--bs-body-color);
+  color: var(--content-color);
   font-size: 0.875rem;
   font-weight: 600;
 }
 
 .template-library-form .form-control,
 .template-library-form .form-select {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
+  background-color: var(--bg-secondary-themed);
+  color: var(--content-color);
+  border-color: var(--border-color-themed);
 }
 
 .template-library-form .form-control::placeholder {
-  color: var(--bs-secondary-color);
+  color: var(--content-color-secondary);
 }
 
 .template-library-form .form-control:focus {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-primary);
-  box-shadow: 0 0 0 0.15rem color-mix(in srgb, var(--bs-primary) 18%, transparent);
+  background-color: var(--bg-secondary-themed);
+  color: var(--content-color);
+  border-color: var(--link-color-themed);
+  box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.15);
 }
 
 .template-library-form textarea.font-monospace {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
+  background-color: var(--bg-secondary-themed);
+  color: var(--content-color);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
@@ -80,8 +80,8 @@
   gap: 1rem;
   margin: 1.5rem -1rem -1rem;
   padding: 0.75rem 1rem;
-  background: var(--bs-body-bg);
-  border-top: 1px solid var(--bs-border-color);
+  background: var(--bg-secondary-themed);
+  border-top: 1px solid var(--border-color-themed);
 }
 
 .template-library-form-actions .btn-primary,
@@ -101,10 +101,10 @@
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
-  border: 1px solid var(--bs-border-color);
+  border: 1px solid var(--border-color-themed);
   border-radius: 999px;
-  background: var(--bs-tertiary-bg);
-  color: var(--bs-body-color);
+  background: var(--bg-secondary-themed);
+  color: var(--content-color);
   font-size: 0.8125rem;
 }
 
@@ -117,27 +117,72 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--bs-secondary-color);
+  color: var(--content-color-secondary);
   font-size: 1rem;
   line-height: 1;
 }
 
 .template-library-category-remove:hover {
-  color: var(--bs-body-color);
+  color: var(--content-color);
 }
 
 .template-library-panel .btn-outline-secondary {
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
+  color: var(--content-color);
+  border-color: var(--border-color-themed);
+  background: var(--bg-secondary-themed);
 }
 
-.template-library-panel .btn-outline-secondary:hover {
-  color: var(--bs-body-color);
-  background: var(--bs-tertiary-bg);
+.template-library-panel .btn-outline-secondary:hover,
+.template-library-panel .btn-outline-secondary:focus {
+  color: var(--content-color);
+  background: var(--bg-tertiary-themed);
+  border-color: var(--border-color-themed);
+}
+
+.template-library-panel .btn-outline-primary {
+  color: var(--link-color-themed);
+  border-color: var(--link-color-themed);
+  background: var(--bg-secondary-themed);
+}
+
+.template-library-panel .btn-outline-primary:hover,
+.template-library-panel .btn-outline-primary:focus {
+  color: var(--bg-primary-themed);
+  background: var(--link-color-themed);
+}
+
+.template-library-panel .btn-primary {
+  color: var(--bg-primary-themed);
+  background: var(--link-color-themed);
+  border-color: var(--link-color-themed);
+}
+
+.template-library-panel .btn-primary:hover,
+.template-library-panel .btn-primary:focus {
+  color: var(--bg-primary-themed);
+  background: var(--link-color-themed);
+  border-color: var(--link-color-themed);
 }
 
 .template-library-panel .dropdown-menu {
+  color: var(--content-color);
+  background: var(--bg-secondary-themed);
+  border-color: var(--border-color-themed);
   font-size: 0.875rem;
+}
+
+.template-library-panel .dropdown-item {
+  color: var(--content-color);
+}
+
+.template-library-panel .dropdown-item:hover,
+.template-library-panel .dropdown-item:focus {
+  color: var(--content-color);
+  background: var(--bg-tertiary-themed);
+}
+
+.template-library-panel .form-check-label {
+  color: var(--content-color);
 }
 
 .template-library-panel .alert {
