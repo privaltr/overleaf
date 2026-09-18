@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button, Dropdown, Form } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-header'
 import getMeta from '@/utils/meta'
+import { getUserFacingMessage } from '../../../infrastructure/fetch-json'
 import {
   createTemplate,
   deleteTemplate,
@@ -13,9 +14,8 @@ import {
   updateTemplate,
 } from '../util/api'
 import { relevanceScore } from '../util/search'
-import { getUserFacingMessage } from '../../../infrastructure/fetch-json'
 
-const emptyDraft: TemplateSnippetInput = {
+const EMPTY_DRAFT: TemplateSnippetInput = {
   title: '',
   description: '',
   content: '',
@@ -24,113 +24,160 @@ const emptyDraft: TemplateSnippetInput = {
 
 export default function TemplateLibraryPanel() {
   const { t } = useTranslation()
-  const isAnonymous = getMeta('ol-anonymous')
-  const [templates, setTemplates] = useState<TemplateSnippet[]>([])
-  const [search, setSearch] = useState('')
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [draft, setDraft] = useState<TemplateSnippetInput | null>(null)
-  const [newCategory, setNewCategory] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<string>()
+  const anonymous = getMeta('ol-anonymous')
 
-  const load = async () => {
-    try {
-      setTemplates(await getTemplates())
-    } catch (e) {
-      setError(getUserFacingMessage(e) || 'Unable to load templates.')
-    }
-  }
+  const [templates, setTemplates] = useState<TemplateSnippet[]>([])
+  const [query, setQuery] = useState('')
+  const [categoriesFilter, setCategoriesFilter] = useState<string[]>([])
+  const [draft, setDraft] = useState<TemplateSnippetInput | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [categoryInput, setCategoryInput] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!isAnonymous) void load()
-  }, [isAnonymous])
+    if (anonymous) return
 
-  const allCategories = useMemo(
-    () => [...new Set(templates.flatMap(t => t.categories))].sort((a, b) => a.localeCompare(b)),
-    [templates]
-  )
+    getTemplates()
+      .then(setTemplates)
+      .catch(error => {
+        setError(getUserFacingMessage(error) || 'Unable to load templates.')
+      })
+  }, [anonymous])
 
-  const results = useMemo(() => {
-    const filtered = templates.filter(template =>
-      selectedCategories.every(category => template.categories.includes(category))
+  const availableCategories = useMemo(() => {
+    const values = new Set<string>()
+
+    templates.forEach(template => {
+      template.categories.forEach(category => values.add(category))
+    })
+
+    return Array.from(values).sort((a, b) => a.localeCompare(b))
+  }, [templates])
+
+  const filteredTemplates = useMemo(() => {
+    const withCategories = templates.filter(template =>
+      categoriesFilter.every(category =>
+        template.categories.includes(category)
+      )
     )
-    return filtered
-      .map(template => ({ template, score: relevanceScore(template, search) }))
-      .filter(({ score }) => !search.trim() || score > 0)
-      .sort((a, b) => b.score - a.score || a.template.title.localeCompare(b.template.title))
-      .map(({ template }) => template)
-  }, [templates, search, selectedCategories])
+
+    const normalizedQuery = query.trim()
+    if (!normalizedQuery) return withCategories
+
+    return withCategories
+      .map(template => ({
+        template,
+        score: relevanceScore(template, normalizedQuery),
+      }))
+      .filter(result => result.score > 0)
+      .sort((a, b) => {
+        if (a.score !== b.score) return b.score - a.score
+        return a.template.title.localeCompare(b.template.title)
+      })
+      .map(result => result.template)
+  }, [templates, query, categoriesFilter])
+
+  const closeEditor = () => {
+    setDraft(null)
+    setEditingId(null)
+    setCategoryInput('')
+  }
 
   const startCreate = () => {
+    setError('')
     setEditingId(null)
-    setDraft({ ...emptyDraft, categories: [] })
-    setNewCategory('')
-    setError(undefined)
+    setCategoryInput('')
+    setDraft({
+      title: EMPTY_DRAFT.title,
+      description: EMPTY_DRAFT.description,
+      content: EMPTY_DRAFT.content,
+      categories: [],
+    })
   }
 
   const startEdit = (template: TemplateSnippet) => {
+    setError('')
     setEditingId(template.id)
+    setCategoryInput('')
     setDraft({
       title: template.title,
       description: template.description,
       content: template.content,
-      categories: [...template.categories],
+      categories: template.categories.slice(),
     })
-    setNewCategory('')
-    setError(undefined)
   }
 
-  const addCategory = (value: string) => {
-    const category = value.trim()
-    if (!category || draft?.categories.includes(category)) return
-    setDraft(current =>
-      current ? { ...current, categories: [...current.categories, category] } : current
-    )
-    setNewCategory('')
+  const addCategory = () => {
+    const value = categoryInput.trim()
+    if (!draft || !value) return
+    if (draft.categories.includes(value)) return
+
+    setDraft({
+      ...draft,
+      categories: draft.categories.concat(value),
+    })
+    setCategoryInput('')
   }
 
   const removeCategory = (category: string) => {
-    setDraft(current =>
-      current ? { ...current, categories: current.categories.filter(item => item !== category) } : current
-    )
-  }
+    if (!draft) return
 
-  const cancel = () => {
-    setEditingId(null)
-    setDraft(null)
-    setNewCategory('')
+    setDraft({
+      ...draft,
+      categories: draft.categories.filter(value => value !== category),
+    })
   }
 
   const save = async () => {
-    if (!draft?.title.trim()) return
+    if (!draft || !draft.title.trim()) return
+
     setBusy(true)
-    setError(undefined)
+    setError('')
+
     try {
       const saved = editingId
         ? await updateTemplate(editingId, draft)
         : await createTemplate(draft)
-      setTemplates(current =>
-        editingId ? current.map(t => (t.id === saved.id ? saved : t)) : [saved, ...current]
-      )
-      cancel()
-    } catch (e) {
-      setError(getUserFacingMessage(e) || 'Unable to save template.')
+
+      if (editingId) {
+        setTemplates(current =>
+          current.map(template =>
+            template.id === saved.id ? saved : template
+          )
+        )
+      } else {
+        setTemplates(current => [saved, ...current])
+      }
+
+      closeEditor()
+    } catch (saveError) {
+      setError(getUserFacingMessage(saveError) || 'Unable to save template.')
     } finally {
       setBusy(false)
     }
   }
 
   const remove = async (template: TemplateSnippet) => {
-    if (!window.confirm(`Delete template "${template.title}"?`)) return
+    const confirmed = window.confirm(
+      'Delete template "' + template.title + '"?'
+    )
+    if (!confirmed) return
+
     setBusy(true)
-    setError(undefined)
+    setError('')
+
     try {
       await deleteTemplate(template.id)
-      setTemplates(current => current.filter(t => t.id !== template.id))
-      if (editingId === template.id) cancel()
-    } catch (e) {
-      setError(getUserFacingMessage(e) || 'Unable to delete template.')
+      setTemplates(current =>
+        current.filter(currentTemplate => currentTemplate.id !== template.id)
+      )
+
+      if (editingId === template.id) {
+        closeEditor()
+      }
+    } catch (removeError) {
+      setError(getUserFacingMessage(removeError) || 'Unable to delete template.')
     } finally {
       setBusy(false)
     }
@@ -138,11 +185,15 @@ export default function TemplateLibraryPanel() {
 
   const duplicate = async (template: TemplateSnippet) => {
     setBusy(true)
-    setError(undefined)
+    setError('')
+
     try {
-      setTemplates(current => [await duplicateTemplate(template.id), ...current])
-    } catch (e) {
-      setError(getUserFacingMessage(e) || 'Unable to duplicate template.')
+      const copy = await duplicateTemplate(template.id)
+      setTemplates(current => [copy, ...current])
+    } catch (duplicateError) {
+      setError(
+        getUserFacingMessage(duplicateError) || 'Unable to duplicate template.'
+      )
     } finally {
       setBusy(false)
     }
@@ -156,66 +207,159 @@ export default function TemplateLibraryPanel() {
     )
   }
 
-  const categories = (values: string[]) => (
+  const renderCategories = (values: string[]) => (
     <div className="d-flex flex-wrap gap-1 mt-1">
       {values.map(value => (
-        <span className="badge bg-secondary" key={value}>{value}</span>
+        <span className="badge bg-secondary" key={value}>
+          {value}
+        </span>
       ))}
     </div>
   )
 
-  if (isAnonymous) return null
+  if (anonymous) return null
 
   if (draft) {
     return (
       <div className="h-100 d-flex flex-column">
         <RailPanelHeader
-          title={editingId ? `Edit ${t('template')}` : `New ${t('template')}`}
-          actions={<Button variant="link" size="sm" onClick={cancel} disabled={busy}>{t('cancel')}</Button>}
+          title={editingId ? 'Edit ' + t('template') : 'New ' + t('template')}
+          actions={
+            <Button
+              variant="link"
+              size="sm"
+              onClick={closeEditor}
+              disabled={busy}
+            >
+              {t('cancel')}
+            </Button>
+          }
         />
+
         <div className="overflow-auto p-3">
           <Form.Group className="mb-3">
             <Form.Label>{t('title')}</Form.Label>
-            <Form.Control value={draft.title} onChange={e => setDraft(d => d && ({ ...d, title: e.target.value }))} autoFocus />
+            <Form.Control
+              autoFocus
+              value={draft.title}
+              onChange={event =>
+                setDraft({
+                  ...draft,
+                  title: event.target.value,
+                })
+              }
+            />
           </Form.Group>
+
           <Form.Group className="mb-3">
             <Form.Label>{t('description')}</Form.Label>
-            <Form.Control as="textarea" rows={3} value={draft.description} onChange={e => setDraft(d => d && ({ ...d, description: e.target.value }))} />
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={draft.description}
+              onChange={event =>
+                setDraft({
+                  ...draft,
+                  description: event.target.value,
+                })
+              }
+            />
           </Form.Group>
+
           <Form.Group className="mb-3">
             <Form.Label>{t('categories')}</Form.Label>
             <div className="d-flex gap-2 mb-2">
               <Form.Control
-                value={newCategory}
+                value={categoryInput}
                 placeholder="New category"
-                onChange={e => setNewCategory(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' || e.key === ',') {
-                    e.preventDefault()
-                    addCategory(newCategory)
+                onChange={event => setCategoryInput(event.target.value)}
+                onKeyDown={event => {
+                  if (event.key === 'Enter' || event.key === ',') {
+                    event.preventDefault()
+                    addCategory()
                   }
                 }}
               />
+
               <Dropdown autoClose="outside">
-                <Dropdown.Toggle size="sm" variant="outline-secondary">Existing</Dropdown.Toggle>
-                <Dropdown.Menu style={{ maxHeight: 240, overflowY: 'auto' }}>
-                  {allCategories.length === 0
-                    ? <Dropdown.Item disabled>No existing categories</Dropdown.Item>
-                    : allCategories.map(category => (
-                        <Dropdown.Item key={category} onClick={() => addCategory(category)}>{category}</Dropdown.Item>
-                      ))}
+                <Dropdown.Toggle
+                  size="sm"
+                  variant="outline-secondary"
+                >
+                  Existing
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu
+                  style={{ maxHeight: 240, overflowY: 'auto' }}
+                >
+                  {availableCategories.length === 0 ? (
+                    <Dropdown.Item disabled>
+                      No existing categories
+                    </Dropdown.Item>
+                  ) : (
+                    availableCategories.map(category => (
+                      <Dropdown.Item
+                        key={category}
+                        onClick={() => {
+                          if (!draft.categories.includes(category)) {
+                            setDraft({
+                              ...draft,
+                              categories: draft.categories.concat(category),
+                            })
+                          }
+                        }}
+                      >
+                        {category}
+                      </Dropdown.Item>
+                    ))
+                  )}
                 </Dropdown.Menu>
               </Dropdown>
             </div>
-            {categories(draft.categories)}
+
+            {renderCategories(draft.categories)}
+            <div className="d-flex flex-wrap gap-1 mt-1">
+              {draft.categories.map(category => (
+                <Button
+                  key={category}
+                  variant="link"
+                  size="sm"
+                  className="p-0"
+                  onClick={() => removeCategory(category)}
+                  disabled={busy}
+                >
+                  Remove {category}
+                </Button>
+              ))}
+            </div>
           </Form.Group>
+
           <Form.Group className="mb-3">
             <Form.Label>LaTeX</Form.Label>
-            <Form.Control as="textarea" rows={18} value={draft.content} onChange={e => setDraft(d => d && ({ ...d, content: e.target.value }))} spellCheck={false} className="font-monospace" />
+            <Form.Control
+              as="textarea"
+              rows={18}
+              value={draft.content}
+              onChange={event =>
+                setDraft({
+                  ...draft,
+                  content: event.target.value,
+                })
+              }
+              spellCheck={false}
+              className="font-monospace"
+            />
           </Form.Group>
+
           {error && <div className="alert alert-danger">{error}</div>}
+
           <div className="d-flex justify-content-end">
-            <Button onClick={save} disabled={busy || !draft.title.trim()}>{busy ? 'Saving…' : t('save')}</Button>
+            <Button
+              onClick={save}
+              disabled={busy || !draft.title.trim()}
+            >
+              {busy ? 'Saving…' : t('save')}
+            </Button>
           </div>
         </div>
       </div>
@@ -224,46 +368,113 @@ export default function TemplateLibraryPanel() {
 
   return (
     <div className="h-100 d-flex flex-column">
-      <RailPanelHeader title={t('templates')} actions={<Button variant="primary" size="sm" onClick={startCreate}>{t('new')}</Button>} />
+      <RailPanelHeader
+        title={t('templates')}
+        actions={
+          <Button variant="primary" size="sm" onClick={startCreate}>
+            {t('new')}
+          </Button>
+        }
+      />
+
       <div className="p-2 border-bottom">
-        <Form.Control type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search templates…" aria-label="Search templates" />
+        <Form.Control
+          type="search"
+          value={query}
+          onChange={event => setQuery(event.target.value)}
+          placeholder="Search templates"
+          aria-label="Search templates"
+        />
+
         <Dropdown autoClose="outside" className="mt-2">
           <Dropdown.Toggle variant="outline-secondary" size="sm">
-            {selectedCategories.length ? `Categories (${selectedCategories.length})` : t('categories')}
+            {categoriesFilter.length > 0
+              ? 'Categories (' + categoriesFilter.length + ')'
+              : t('categories')}
           </Dropdown.Toggle>
-          <Dropdown.Menu style={{ maxHeight: 260, overflowY: 'auto' }}>
-            {allCategories.length === 0
-              ? <Dropdown.Item disabled>No categories</Dropdown.Item>
-              : allCategories.map(category => (
-                  <Form.Check
-                    key={category}
-                    type="checkbox"
-                    className="px-3 py-1"
-                    label={category}
-                    checked={selectedCategories.includes(category)}
-                    onChange={e => setSelectedCategories(current => e.target.checked ? [...current, category] : current.filter(c => c !== category))}
-                  />
-                ))}
+
+          <Dropdown.Menu
+            style={{ maxHeight: 260, overflowY: 'auto' }}
+          >
+            {availableCategories.length === 0 ? (
+              <Dropdown.Item disabled>No categories</Dropdown.Item>
+            ) : (
+              availableCategories.map(category => (
+                <Form.Check
+                  key={category}
+                  type="checkbox"
+                  className="px-3 py-1"
+                  label={category}
+                  checked={categoriesFilter.includes(category)}
+                  onChange={event => {
+                    if (event.target.checked) {
+                      setCategoriesFilter(current =>
+                        current.includes(category)
+                          ? current
+                          : current.concat(category)
+                      )
+                    } else {
+                      setCategoriesFilter(current =>
+                        current.filter(value => value !== category)
+                      )
+                    }
+                  }}
+                />
+              ))
+            )}
           </Dropdown.Menu>
         </Dropdown>
       </div>
+
       <div className="overflow-auto flex-grow-1 p-2">
         {error && <div className="alert alert-danger">{error}</div>}
-        {results.length === 0
-          ? <div className="text-muted small p-2">No matching templates.</div>
-          : results.map(template => (
-              <div className="border rounded p-2 mb-2" key={template.id}>
-                <div className="fw-semibold">{template.title}</div>
-                {template.description && <div className="text-muted small mt-1">{template.description}</div>}
-                {categories(template.categories)}
-                <div className="d-flex flex-wrap gap-1 mt-2">
-                  <Button size="sm" onClick={() => insert(template)}>{t('insert')}</Button>
-                  <Button size="sm" variant="outline-secondary" onClick={() => startEdit(template)}>{t('edit')}</Button>
-                  <Button size="sm" variant="outline-secondary" onClick={() => duplicate(template)}>{t('duplicate')}</Button>
-                  <Button size="sm" variant="outline-danger" onClick={() => remove(template)}>{t('delete')}</Button>
+
+        {filteredTemplates.length === 0 ? (
+          <div className="text-muted small p-2">
+            No matching templates.
+          </div>
+        ) : (
+          filteredTemplates.map(template => (
+            <div className="border rounded p-2 mb-2" key={template.id}>
+              <div className="fw-semibold">{template.title}</div>
+
+              {template.description && (
+                <div className="text-muted small mt-1">
+                  {template.description}
                 </div>
+              )}
+
+              {renderCategories(template.categories)}
+
+              <div className="d-flex flex-wrap gap-1 mt-2">
+                <Button size="sm" onClick={() => insert(template)}>
+                  {t('insert')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline-secondary"
+                  onClick={() => startEdit(template)}
+                >
+                  {t('edit')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline-secondary"
+                  onClick={() => duplicate(template)}
+                >
+                  {t('duplicate')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline-danger"
+                  onClick={() => remove(template)}
+                >
+                  {t('delete')}
+                </Button>
               </div>
-            ))}
+            </div>
+          ))
+        )}
       </div>
     </div>
   )
