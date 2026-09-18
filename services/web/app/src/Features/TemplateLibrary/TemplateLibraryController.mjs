@@ -52,7 +52,7 @@ async function getAll(req, res) {
 }
 
 async function create(req, res) {
-  const { body } = parseReq(req, { body: templateBodySchema })
+  const { body } = parseReq(req, templateBodySchema)
   const userId = SessionManager.getLoggedInUserId(req.session)
   const template = await TemplateLibraryHandler.promises.create(userId, body)
   res.status(201).json(serialize(template))
