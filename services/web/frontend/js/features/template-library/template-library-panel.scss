@@ -4,7 +4,7 @@
 }
 
 .template-library-toolbar {
-  background: var(--bg-secondary-themed);
+  background: var(--bg-primary-themed);
   border-color: var(--border-color-themed) !important;
 }
 
@@ -289,4 +289,45 @@
 
 .template-library-card-action > .dropdown-menu {
   margin-top: 0.25rem;
+}
+
+.template-library-search-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.template-library-search-row .form-control {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.template-library-search-action {
+  flex: 0 0 auto;
+}
+
+.template-library-search-action .btn {
+  font-weight: 600;
+}
+
+.template-library-search-action .dropdown-toggle {
+  min-width: 2rem;
+}
+
+.template-library-card-action {
+  display: inline-flex;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.template-library-card-action .btn {
+  margin: 0;
+}
+
+.template-library-card-action .template-library-insert {
+  font-weight: 600;
+}
+
+.template-library-card-action .template-library-action-toggle {
+  min-width: 2rem;
 }
