@@ -503,11 +503,6 @@ export default function TemplateLibraryPanel() {
                 </Dropdown>
               </div>
 
-              {template.categories.length > 0 && (
-                <div className="template-library-category-list">
-                  {renderCategories(template.categories)}
-                </div>
-              )}
             </div>
           ))))
         )}
