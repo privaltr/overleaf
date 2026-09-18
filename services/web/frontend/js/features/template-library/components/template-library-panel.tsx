@@ -200,12 +200,16 @@ export default function TemplateLibraryPanel() {
     }
   }
 
-  const insert = (template: TemplateSnippet) => {
+  const insertContent = (content: string) => {
     window.dispatchEvent(
-      new CustomEvent('ui:insert-template', {
-        detail: { content: template.content },
+      new CustomEvent('editor:insert-symbol', {
+        detail: { command: content },
       })
     )
+  }
+
+  const insert = (template: TemplateSnippet) => {
+    insertContent(template.content)
   }
 
   const renderCategories = (values: string[]) => (
@@ -367,11 +371,7 @@ export default function TemplateLibraryPanel() {
               <Button
                 variant="outline-primary"
                 onClick={() => {
-                  window.dispatchEvent(
-                    new CustomEvent('ui:insert-template', {
-                      detail: { content: draft.content },
-                    })
-                  )
+                  insertContent(draft.content)
                   closeEditor()
                 }}
                 disabled={busy || !draft.content.trim()}
