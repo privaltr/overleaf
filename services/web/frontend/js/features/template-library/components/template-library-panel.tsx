@@ -410,7 +410,7 @@ export default function TemplateLibraryPanel() {
                 aria-label={t('categories')}
               >
                 <span aria-hidden="true" className="template-library-filter-icon">
-                  ☷
+                  ☰
                 </span>
               </Dropdown.Toggle>
 
