@@ -409,9 +409,14 @@ export default function TemplateLibraryPanel() {
                 className="template-library-filter-toggle"
                 aria-label={t('categories')}
               >
-                <span aria-hidden="true" className="template-library-filter-icon">
-                  ⋮
+                <span
+                  className="material-symbols template-library-filter-icon"
+                  aria-hidden="true"
+                  translate="no"
+                >
+                  more_vert
                 </span>
+                <span className="visually-hidden">Open category filter</span>
               </Dropdown.Toggle>
 
               <Dropdown.Menu align="start">
