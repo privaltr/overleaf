@@ -410,7 +410,7 @@ export default function TemplateLibraryPanel() {
                 aria-label={t('categories')}
               >
                 <span aria-hidden="true" className="template-library-filter-icon">
-                  ☰
+                  ⋮
                 </span>
               </Dropdown.Toggle>
 
@@ -419,26 +419,30 @@ export default function TemplateLibraryPanel() {
                   <Dropdown.Item disabled>No categories</Dropdown.Item>
                 ) : (
                   availableCategories.map(category => (
-                    <Form.Check
+                    <label
                       key={category}
-                      type="checkbox"
                       className="template-library-category-check"
-                      label={category}
-                      checked={categoriesFilter.includes(category)}
-                      onChange={event => {
-                        if (event.target.checked) {
-                          setCategoriesFilter(current =>
-                            current.includes(category)
-                              ? current
-                              : current.concat(category)
-                          )
-                        } else {
-                          setCategoriesFilter(current =>
-                            current.filter(value => value !== category)
-                          )
-                        }
-                      }}
-                    />
+                    >
+                      <input
+                        type="checkbox"
+                        checked={categoriesFilter.includes(category)}
+                        onChange={event => {
+                          if (event.target.checked) {
+                            setCategoriesFilter(current =>
+                              current.includes(category)
+                                ? current
+                                : current.concat(category)
+                            )
+                          } else {
+                            setCategoriesFilter(current =>
+                              current.filter(value => value !== category)
+                            )
+                          }
+                        }}
+                      />
+                      <span className="template-library-category-box" aria-hidden="true" />
+                      <span>{category}</span>
+                    </label>
                   ))
                 )}
               </Dropdown.Menu>
