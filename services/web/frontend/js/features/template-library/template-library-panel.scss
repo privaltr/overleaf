@@ -359,37 +359,7 @@
 .template-library-toolbar {
   padding: 8px !important;
   background: var(--bg-primary-themed);
-}
-
-.template-library-toolbar .row {
-  --bs-gutter-x: 0.25rem;
-  --bs-gutter-y: 0;
-}
-
-.template-library-toolbar .form-control {
-  margin: 0;
-}
-
-.template-library-toolbar > .dropdown {
-  margin-top: 4px !important;
-}
-
-/* Categories filter: match the light/hovered Overleaf control. */
-.template-library-toolbar > .dropdown > .dropdown-toggle {
-  color: #212529;
-  background: #fff;
-  border-color: #fff;
-  transition: opacity 0.15s ease-in-out;
-}
-
-.template-library-toolbar > .dropdown > .dropdown-toggle:hover,
-.template-library-toolbar > .dropdown > .dropdown-toggle:focus,
-.template-library-toolbar > .dropdown > .dropdown-toggle:active,
-.template-library-toolbar > .dropdown.show > .dropdown-toggle {
-  color: #212529;
-  background: #fff;
-  border-color: #fff;
-  opacity: 0.75;
+  border-color: var(--border-color-themed) !important;
 }
 
 .template-library-search-row {
@@ -399,32 +369,42 @@
 }
 
 .template-library-filter-group {
+  position: relative;
   display: flex;
   align-items: stretch;
   flex: 1 1 auto;
   min-width: 0;
+  isolation: isolate;
+  border-radius: var(--bs-border-radius);
 }
 
 .template-library-filter-group .form-control {
+  position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   min-width: 0;
+  margin: 0;
+  background-color: var(--bg-secondary-themed);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 .template-library-filter-toggle {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.25rem;
+  min-width: 2.25rem;
   flex: 0 0 2.25rem;
   margin-left: -1px;
-  padding: 0;
+  padding: 0 0.25rem;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-color: var(--border-color-themed);
   color: var(--content-color);
-  background: var(--bg-primary-themed);
+  background: var(--bg-secondary-themed);
 }
 
 .template-library-filter-toggle:hover,
@@ -436,68 +416,8 @@
   border-color: var(--border-color-themed);
 }
 
-.template-library-filter-icon {
-  display: inline-block;
-  font-size: 1.1rem;
-  line-height: 1;
-  transform: rotate(90deg);
-}
-
-.template-library-filter-group .dropdown {
-  display: flex;
-}
-
-.template-library-filter-group .dropdown-menu {
-  margin-top: 0.25rem;
-}
-
-/* Make the connected search control behave as one focusable control. */
-.template-library-filter-group:focus-within {
-  border-radius: 0.25rem;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.template-library-filter-group .form-control:focus {
-  box-shadow: none;
-  position: relative;
-  z-index: 1;
-}
-
-.template-library-filter-group .template-library-filter-toggle:focus {
-  box-shadow: none;
-}
-
-/* Connected search control: one continuous focus ring. */
-.template-library-filter-group {
-  position: relative;
-  border-radius: var(--bs-border-radius);
-}
-
-.template-library-filter-group:focus-within {
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.template-library-filter-group .form-control:focus,
-.template-library-filter-group .template-library-filter-toggle:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.template-library-filter-group .form-control {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.template-library-filter-toggle {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-/* Vertical three-dot menu icon. */
-.template-library-filter-icon {
-  transform: none;
-  font-size: 1.25rem;
-  line-height: 0.8;
+.template-library-filter-toggle.no-default-caret::after {
+  content: none !important;
 }
 
 .template-library-filter-icon {
@@ -506,42 +426,16 @@
   justify-content: center;
   font-size: 1.125rem;
   line-height: 1;
-  transform: none;
 }
 
-.template-library-filter-toggle {
-  width: 2.25rem;
-  min-width: 2.25rem;
-  padding: 0.25rem;
-}
-
-/* Final search/filter control alignment. */
-.template-library-filter-group {
-  position: relative;
-  isolation: isolate;
-  border-radius: var(--bs-border-radius);
-}
-
-.template-library-filter-group::after {
+.template-library-filter-group:focus-within::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: var(--bs-border-radius);
   pointer-events: none;
-  opacity: 0;
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-  transition: opacity 0.15s ease-in-out;
   z-index: 3;
-}
-
-.template-library-filter-group:focus-within::after {
-  opacity: 1;
-}
-
-.template-library-filter-group .form-control {
-  position: relative;
-  z-index: 1;
-  background-color: var(--bg-secondary-themed);
 }
 
 .template-library-filter-group .form-control:focus,
@@ -550,102 +444,27 @@
   box-shadow: none;
 }
 
-.template-library-filter-toggle {
-  position: relative;
-  z-index: 1;
-  padding-left: 0.2rem;
-  padding-right: 0.45rem;
-}
-
-.template-library-filter-toggle .material-symbols,
-.template-library-filter-icon {
-  font-size: 1.125rem;
-}
-
-.template-library-filter-toggle::after {
-  margin-left: 0.15rem;
-  transform: translateX(-0.1rem);
-}
-
-/* Category dropdown should fully cover content underneath it. */
-.template-library-filter-group .dropdown-menu {
-  position: absolute;
-  z-index: 1050;
-  background: var(--bg-primary-themed) !important;
-  border-color: var(--border-color-themed);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
-}
-
-/* Keep the filter dropdown above template cards. */
-.template-library-toolbar {
-  position: relative;
-  z-index: 20;
-}
-
-.template-library-filter-group {
-  position: relative;
-  z-index: 21;
-}
-
-.template-library-filter-group .dropdown-menu {
-  z-index: 2000;
-  background: var(--bg-primary-themed) !important;
-}
-
-.template-library-category-check {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-height: 2rem;
-  padding: 0.25rem 0.75rem;
-  color: var(--content-primary-themed) !important;
-}
-
-/* Match Overleaf's native dropdown surface and checkbox controls. */
+/*
+ * Use the same dropdown tokens as Overleaf's native dropdown-menu.
+ * In the dark theme this resolves to a 1px primary border; in the light
+ * theme it follows the native transparent border setting.
+ */
 .template-library-panel .dropdown-menu {
   z-index: 3000 !important;
+  min-width: 240px;
+  color: var(--dropdown-text-color);
+  background-color: var(--dropdown-background) !important;
+  border: var(--dropdown-border-width) solid var(--dropdown-border-color) !important;
+  border-radius: var(--border-radius-base);
+  box-shadow: var(--bs-box-shadow);
   opacity: 1 !important;
-  background-color: var(--bg-primary-themed) !important;
   background-image: none !important;
   background-clip: padding-box;
-  border: var(--bs-border-width) solid var(--border-color-themed) !important;
-  border-radius: var(--bs-border-radius);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
 }
 
 .template-library-filter-group .dropdown-menu {
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.template-library-category-check .form-checkbox .form-check-input {
-  width: 1rem;
-  height: 1rem;
-  margin: 0;
-  background-color: var(--checkbox-bg);
-  border-color: var(--checkbox-border-color);
-  border-radius: 4px;
-  opacity: 1;
-}
-
-.template-library-category-check .form-checkbox .form-check-input:checked {
-  background-color: var(--checkbox-bg);
-  border-color: var(--checkbox-border-color);
-}
-
-
-/* Match the native Overleaf category dropdown and checkbox styling. */
-.template-library-panel .dropdown-menu {
-  z-index: 3000 !important;
-  opacity: 1 !important;
-  background-color: var(--bg-primary-themed) !important;
-  background-image: none !important;
-  border: var(--bs-border-width) solid var(--border-color-themed) !important;
-  border-radius: var(--bs-border-radius);
-  box-shadow: var(--bs-box-shadow);
-}
-
-.template-library-filter-group .dropdown-menu {
+  position: absolute;
+  margin-top: var(--spacing-01);
   overflow: visible;
 }
 
@@ -657,8 +476,16 @@
   padding: 0.25rem 0.75rem;
   color: var(--content-primary-themed) !important;
   line-height: 1.25;
+  cursor: pointer;
 }
 
+/*
+ * Keep the native Overleaf checkbox styling. The only local visual
+ * overrides are the same base background/border tokens used by
+ * .form-checkbox .form-check-input and the 4px checkbox radius.
+ * Checked state, checkmark, hover and focus come from Overleaf's
+ * native .form-checkbox rules.
+ */
 .template-library-category-check .form-checkbox {
   display: flex;
   align-items: center;
@@ -671,23 +498,20 @@
 }
 
 .template-library-category-check .form-checkbox .form-check-input {
+  position: static;
   display: block;
   width: 1rem;
   height: 1rem;
   min-width: 1rem;
   margin: 0;
   background-color: var(--checkbox-bg);
-  border: var(--bs-border-width) solid var(--checkbox-border-color);
+  border-color: var(--checkbox-border-color);
+}
+
+.template-library-category-check .form-check-input[type='checkbox'] {
   border-radius: 4px;
-  opacity: 1;
 }
 
-.template-library-category-check .form-checkbox .form-check-input:checked {
-  background-color: var(--checkbox-bg-checked);
-  border-color: var(--checkbox-border-color-checked);
-  background-image: var(--form-check-input-checked-bg-image);
-}
-
-.template-library-category-check .form-checkbox .form-check-input:focus {
-  box-shadow: var(--bs-focus-ring-box-shadow);
+.template-library-category-check:hover {
+  background-color: var(--dropdown-background-hover);
 }
