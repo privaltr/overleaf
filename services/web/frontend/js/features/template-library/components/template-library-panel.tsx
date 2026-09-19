@@ -406,7 +406,7 @@ export default function TemplateLibraryPanel() {
                 as={Button}
                 size="sm"
                 variant="outline-secondary"
-                className="template-library-filter-toggle"
+                className="template-library-filter-toggle no-default-caret"
                 aria-label={t('categories')}
               >
                 <span
