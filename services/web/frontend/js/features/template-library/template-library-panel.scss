@@ -655,3 +655,77 @@
   border-right: 2px solid #fff;
   border-bottom: 2px solid #fff;
 }
+
+/* Final search/filter control alignment. */
+.template-library-filter-group {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--bs-border-radius);
+}
+
+.template-library-filter-group::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--bs-border-radius);
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  transition: opacity 0.15s ease-in-out;
+  z-index: 3;
+}
+
+.template-library-filter-group:focus-within::after {
+  opacity: 1;
+}
+
+.template-library-filter-group .form-control {
+  position: relative;
+  z-index: 1;
+  background-color: var(--bg-secondary-themed);
+}
+
+.template-library-filter-group .form-control:focus,
+.template-library-filter-group .template-library-filter-toggle:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.template-library-filter-toggle {
+  position: relative;
+  z-index: 1;
+  padding-left: 0.2rem;
+  padding-right: 0.45rem;
+}
+
+.template-library-filter-toggle .material-symbols,
+.template-library-filter-icon {
+  font-size: 1.125rem;
+}
+
+.template-library-filter-toggle::after {
+  margin-left: 0.15rem;
+  transform: translateX(-0.1rem);
+}
+
+/* Category menu items use the same compact Overleaf control surface. */
+.template-library-category-check {
+  min-height: 2rem;
+  padding: 0.25rem 0.75rem;
+  background: var(--bg-secondary-themed);
+  color: var(--content-color);
+}
+
+.template-library-category-check:hover {
+  background: var(--bg-tertiary-themed);
+}
+
+.template-library-category-box {
+  background: var(--bg-secondary-themed);
+  border-color: var(--content-color-secondary);
+}
+
+.template-library-category-check input:checked + .template-library-category-box {
+  background: var(--link-color-themed);
+  border-color: var(--link-color-themed);
+}
