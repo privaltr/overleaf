@@ -428,24 +428,28 @@ export default function TemplateLibraryPanel() {
                       key={category}
                       className="template-library-category-check"
                     >
-                      <input
-                        type="checkbox"
-                        checked={categoriesFilter.includes(category)}
-                        onChange={event => {
-                          if (event.target.checked) {
-                            setCategoriesFilter(current =>
-                              current.includes(category)
-                                ? current
-                                : current.concat(category)
-                            )
-                          } else {
-                            setCategoriesFilter(current =>
-                              current.filter(value => value !== category)
-                            )
-                          }
-                        }}
-                      />
-                      <span className="template-library-category-box" aria-hidden="true" />
+                      <span className="form-checkbox">
+                        <input
+                          autoComplete="off"
+                          aria-label={`Select ${category}`}
+                          type="checkbox"
+                          className="form-check-input"
+                          checked={categoriesFilter.includes(category)}
+                          onChange={event => {
+                            if (event.target.checked) {
+                              setCategoriesFilter(current =>
+                                current.includes(category)
+                                  ? current
+                                  : current.concat(category)
+                              )
+                            } else {
+                              setCategoriesFilter(current =>
+                                current.filter(value => value !== category)
+                              )
+                            }
+                          }}
+                        />
+                      </span>
                       <span>{category}</span>
                     </label>
                   ))
