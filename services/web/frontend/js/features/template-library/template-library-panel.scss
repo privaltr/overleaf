@@ -757,3 +757,20 @@
 .template-library-category-check .form-checkbox .form-check-input:focus {
   box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
 }
+
+/* Category dropdown should fully cover content underneath it. */
+.template-library-filter-group .dropdown-menu {
+  position: absolute;
+  z-index: 1050;
+  background: var(--bg-primary-themed) !important;
+  border-color: var(--border-color-themed);
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+
+.template-library-filter-group .dropdown-menu .template-library-category-check {
+  background: var(--bg-primary-themed);
+}
+
+.template-library-filter-group .dropdown-menu .template-library-category-check:hover {
+  background: var(--bg-tertiary-themed);
+}
