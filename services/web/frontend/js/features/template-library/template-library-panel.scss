@@ -357,9 +357,16 @@
 
 /* Match the IDE Search panel layout. */
 .template-library-toolbar {
+  position: relative;
+  z-index: 100;
   padding: 8px !important;
   background: var(--bg-primary-themed);
   border-color: var(--border-color-themed) !important;
+}
+
+.template-library-list {
+  position: relative;
+  z-index: 0;
 }
 
 .template-library-search-row {
