@@ -53,6 +53,7 @@ import TokenAccessController from './Features/TokenAccess/TokenAccessController.
 import TokenAccessRouter from './Features/TokenAccess/TokenAccessRouter.mjs'
 import LinkedFilesRouter from './Features/LinkedFiles/LinkedFilesRouter.mjs'
 import TemplatesRouter from './Features/Templates/TemplatesRouter.mjs'
+import TemplateLibraryRouter from './Features/TemplateLibrary/TemplateLibraryRouter.mjs'
 import UserMembershipRouter from './Features/UserMembership/UserMembershipRouter.mjs'
 import SystemMessageController from './Features/SystemMessages/SystemMessageController.mjs'
 import AnalyticsRegistrationSourceMiddleware from './Features/Analytics/AnalyticsRegistrationSourceMiddleware.mjs'
@@ -313,6 +314,7 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
   AnalyticsRouter.apply(webRouter, privateApiRouter, publicApiRouter)
   LinkedFilesRouter.apply(webRouter, privateApiRouter, publicApiRouter)
   TemplatesRouter.apply(webRouter)
+  TemplateLibraryRouter.apply(webRouter)
   UserMembershipRouter.apply(webRouter)
   TokenAccessRouter.apply(webRouter)
   HistoryRouter.apply(webRouter, privateApiRouter)
