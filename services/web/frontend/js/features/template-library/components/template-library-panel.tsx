@@ -428,7 +428,7 @@ export default function TemplateLibraryPanel() {
                       key={category}
                       className="template-library-category-check"
                     >
-                      <span className="form-checkbox">
+                      <div className="form-checkbox">
                         <input
                           autoComplete="off"
                           aria-label={`Select ${category}`}
@@ -449,7 +449,7 @@ export default function TemplateLibraryPanel() {
                             }
                           }}
                         />
-                      </span>
+                      </div>
                       <span>{category}</span>
                     </label>
                   ))
