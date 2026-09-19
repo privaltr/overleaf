@@ -390,9 +390,9 @@ export default function TemplateLibraryPanel() {
       />
 
       <div className="border-bottom template-library-toolbar">
-        <Row className="g-1">
-          <Col>
-            <OLFormControl
+        <div className="template-library-search-row">
+          <div className="template-library-filter-group">
+            <Form.Control
               type="search"
               value={query}
               onChange={event => setQuery(event.target.value)}
@@ -400,70 +400,72 @@ export default function TemplateLibraryPanel() {
               aria-label="Search templates"
               size="sm"
             />
-          </Col>
-          <Col className="col-auto">
-            <Dropdown as={ButtonGroup}>
-              <OLButton
-                type="button"
-                className="btn btn-primary"
-                size="sm"
-                onClick={() => setQuery(query.trim())}
-              >
-                Search
-              </OLButton>
+
+            <Dropdown autoClose="outside">
               <Dropdown.Toggle
-                split
-                className="btn btn-primary"
+                as={Button}
                 size="sm"
-                aria-label="Template actions"
-              />
-              <Dropdown.Menu align="end">
-                <Dropdown.Item onClick={startCreate}>
-                  {t('new')}
-                </Dropdown.Item>
+                variant="outline-secondary"
+                className="template-library-filter-toggle"
+                aria-label={t('categories')}
+              >
+                <span aria-hidden="true" className="template-library-filter-icon">
+                  ☷
+                </span>
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu align="start">
+                {availableCategories.length === 0 ? (
+                  <Dropdown.Item disabled>No categories</Dropdown.Item>
+                ) : (
+                  availableCategories.map(category => (
+                    <Form.Check
+                      key={category}
+                      type="checkbox"
+                      className="template-library-category-check"
+                      label={category}
+                      checked={categoriesFilter.includes(category)}
+                      onChange={event => {
+                        if (event.target.checked) {
+                          setCategoriesFilter(current =>
+                            current.includes(category)
+                              ? current
+                              : current.concat(category)
+                          )
+                        } else {
+                          setCategoriesFilter(current =>
+                            current.filter(value => value !== category)
+                          )
+                        }
+                      }}
+                    />
+                  ))
+                )}
               </Dropdown.Menu>
             </Dropdown>
-          </Col>
-        </Row>
+          </div>
 
-        <Dropdown autoClose="outside" className="mt-1">
-          <Dropdown.Toggle variant="outline-secondary" size="sm">
-            {categoriesFilter.length > 0
-              ? 'Categories (' + categoriesFilter.length + ')'
-              : t('categories')}
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu
-            style={{ maxHeight: 260, overflowY: 'auto' }}
-          >
-            {availableCategories.length === 0 ? (
-              <Dropdown.Item disabled>No categories</Dropdown.Item>
-            ) : (
-              availableCategories.map(category => (
-                <Form.Check
-                  key={category}
-                  type="checkbox"
-                  className="px-3 py-1"
-                  label={category}
-                  checked={categoriesFilter.includes(category)}
-                  onChange={event => {
-                    if (event.target.checked) {
-                      setCategoriesFilter(current =>
-                        current.includes(category)
-                          ? current
-                          : current.concat(category)
-                      )
-                    } else {
-                      setCategoriesFilter(current =>
-                        current.filter(value => value !== category)
-                      )
-                    }
-                  }}
-                />
-              ))
-            )}
-          </Dropdown.Menu>
-        </Dropdown>
+          <Dropdown as={ButtonGroup} className="template-library-search-action">
+            <Button
+              variant="success"
+              size="sm"
+              onClick={() => setQuery(query.trim())}
+            >
+              Search
+            </Button>
+            <Dropdown.Toggle
+              split
+              variant="success"
+              size="sm"
+              aria-label="Template actions"
+            />
+            <Dropdown.Menu align="end">
+              <Dropdown.Item onClick={startCreate}>
+                {t('new')}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </div>
 
       <div className="overflow-auto flex-grow-1 p-3 template-library-list">
