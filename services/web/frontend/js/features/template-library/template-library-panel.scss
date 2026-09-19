@@ -267,7 +267,13 @@
 }
 
 .template-library-search-action {
+  display: inline-flex;
+  align-self: stretch;
   flex: 0 0 auto;
+}
+
+.template-library-search-action > .btn {
+  height: 100%;
 }
 
 .template-library-search-action .btn-success {
