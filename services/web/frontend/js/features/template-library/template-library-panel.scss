@@ -632,3 +632,13 @@
   background-color: var(--checkbox-bg);
   border-color: var(--checkbox-border-color);
 }
+
+/* Keep checked category filters visibly checked at rest. */
+.template-library-category-check .form-checkbox .form-check-input:checked {
+  background-color: var(--checkbox-bg-checked, var(--link-color-themed));
+  border-color: var(--checkbox-border-color-checked, var(--link-color-themed));
+  background-image: var(--form-check-input-checked-bg-image, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e"));
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
