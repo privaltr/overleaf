@@ -527,7 +527,7 @@ export default function TemplateLibraryPanel() {
                       {t('edit')}
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => duplicate(template)}>
-                      {t('duplicate')}
+                      Duplicate
                     </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item
