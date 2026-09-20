@@ -48,10 +48,6 @@
   border-color: var(--border-color-themed);
 }
 
-.template-library-form .form-control::placeholder {
-  color: var(--bs-secondary-color);
-}
-
 .template-library-form .form-control:focus {
   background-color: var(--bg-primary-themed);
   color: var(--content-color);
