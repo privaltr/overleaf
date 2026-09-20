@@ -245,6 +245,7 @@ export default function TemplateLibraryPanel() {
             <Form.Control
               as="textarea"
               rows={3}
+              size="sm"
               value={draft.description}
               placeholder="Describe what this template is for"
               onChange={event =>
