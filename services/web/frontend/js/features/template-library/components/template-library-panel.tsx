@@ -307,7 +307,14 @@ export default function TemplateLibraryPanel() {
                           }
                         }}
                       >
-                        {category}
+                        <span
+                          className="material-symbols template-library-category-menu-check"
+                          aria-hidden="true"
+                          translate="no"
+                        >
+                          {draft.categories.includes(category) ? 'check' : ''}
+                        </span>
+                        <span>{category}</span>
                       </Dropdown.Item>
                     ))
                   )}
