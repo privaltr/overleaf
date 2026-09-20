@@ -69,13 +69,14 @@
 .template-library-form-actions {
   position: sticky;
   bottom: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   margin: 1.5rem -1rem -1rem;
   padding: 0.75rem 1rem;
-  background: var(--bg-secondary-themed);
+  background: var(--bg-primary-themed);
   border-top: 1px solid var(--border-color-themed);
 }
 
@@ -444,4 +445,17 @@
 
 .template-library-category-action > .btn {
   margin: 0;
+}
+
+
+.template-library-category-menu-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  min-width: 20px;
+  margin-right: 0.5rem;
+  color: var(--dropdown-text-color);
+  font-size: 20px;
+  line-height: 20px;
 }
