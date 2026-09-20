@@ -230,6 +230,7 @@ export default function TemplateLibraryPanel() {
               autoFocus
               size="sm"
               value={draft.title}
+              placeholder="Template title"
               onChange={event =>
                 setDraft({
                   ...draft,
@@ -245,6 +246,7 @@ export default function TemplateLibraryPanel() {
               as="textarea"
               rows={3}
               value={draft.description}
+              placeholder="Describe what this template is for"
               onChange={event =>
                 setDraft({
                   ...draft,
@@ -346,6 +348,7 @@ export default function TemplateLibraryPanel() {
               as="textarea"
               rows={18}
               value={draft.content}
+              placeholder="Enter LaTeX content for this template"
               onChange={event =>
                 setDraft({
                   ...draft,
