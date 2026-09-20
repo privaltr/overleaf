@@ -37,8 +37,13 @@
 
 .template-library-form .form-label {
   color: var(--content-color);
-  font-size: 0.875rem;
+  font-size: var(--font-size-02);
   font-weight: 600;
+}
+
+.template-library-form .form-control {
+  font-size: var(--font-size-02);
+  color: var(--content-color);
 }
 
 .template-library-form .form-control,
