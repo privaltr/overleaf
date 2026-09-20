@@ -61,7 +61,8 @@
 }
 
 .template-library-form textarea.form-control:not(.font-monospace)::placeholder {
-  color: var(--content-placeholder-dark);
+  color: var(--input-placeholder-content);
+  opacity: 0.65;
 }
 
 .template-library-form textarea.font-monospace {
