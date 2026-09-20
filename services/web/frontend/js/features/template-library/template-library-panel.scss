@@ -57,7 +57,7 @@
   background-color: var(--bg-primary-themed);
   color: var(--content-color);
   border-color: var(--link-color-themed);
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--link-color-themed) 25%, transparent);
 }
 
 .template-library-form textarea.form-control:not(.font-monospace)::placeholder {
