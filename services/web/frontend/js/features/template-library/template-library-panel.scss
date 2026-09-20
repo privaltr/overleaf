@@ -60,6 +60,10 @@
   box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.15);
 }
 
+.template-library-form textarea.form-control:not(.font-monospace)::placeholder {
+  color: var(--content-placeholder-dark);
+}
+
 .template-library-form textarea.font-monospace {
   background-color: var(--bg-primary-themed);
   color: var(--content-color);
