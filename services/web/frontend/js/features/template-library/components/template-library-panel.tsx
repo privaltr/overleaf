@@ -396,7 +396,7 @@ export default function TemplateLibraryPanel() {
               type="search"
               value={query}
               onChange={event => setQuery(event.target.value)}
-              placeholder="Search templates"
+              placeholder="Search all templates..."
               aria-label="Search templates"
               size="sm"
             />

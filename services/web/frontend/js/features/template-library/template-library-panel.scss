@@ -5,7 +5,7 @@
 
 .template-library-toolbar {
   background: var(--bg-primary-themed);
-  border-color: var(--border-color-themed) !important;
+  border-color: var(--border-divider-dark) !important;
 }
 
 .template-library-list {
@@ -339,7 +339,6 @@
 .template-library-search-row .form-control {
   flex: 0 1 160px;
   width: 160px;
-  max-width: 160px;
 }
 
 .template-library-search-action .btn {
@@ -364,7 +363,6 @@
   z-index: 100;
   padding: 8px !important;
   background: var(--bg-primary-themed);
-  border-color: var(--border-color-themed) !important;
 }
 
 .template-library-list {
