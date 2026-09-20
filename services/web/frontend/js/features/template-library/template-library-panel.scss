@@ -43,7 +43,7 @@
 
 .template-library-form .form-control,
 .template-library-form .form-select {
-  background-color: var(--bg-secondary-themed);
+  background-color: var(--bg-primary-themed);
   color: var(--content-color);
   border-color: var(--border-color-themed);
 }
@@ -53,14 +53,14 @@
 }
 
 .template-library-form .form-control:focus {
-  background-color: var(--bg-secondary-themed);
+  background-color: var(--bg-primary-themed);
   color: var(--content-color);
   border-color: var(--link-color-themed);
   box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.15);
 }
 
 .template-library-form textarea.font-monospace {
-  background-color: var(--bg-secondary-themed);
+  background-color: var(--bg-primary-themed);
   color: var(--content-color);
   font-size: 0.8125rem;
   line-height: 1.5;
@@ -413,6 +413,11 @@
 .template-library-search-action .dropdown-menu {
   z-index: 3000 !important;
   min-width: 240px;
+}
+
+.template-library-search-action .dropdown-menu,
+.template-library-category-action .dropdown-menu {
+  background-color: var(--bg-secondary-themed) !important;
 }
 
 .template-library-search-action .dropdown-menu .dropdown-header {
