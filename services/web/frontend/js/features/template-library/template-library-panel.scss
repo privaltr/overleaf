@@ -435,3 +435,13 @@
 .template-library-category-check:hover {
   background-color: var(--dropdown-background-hover);
 }
+
+
+.template-library-category-action {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.template-library-category-action > .btn {
+  margin: 0;
+}
