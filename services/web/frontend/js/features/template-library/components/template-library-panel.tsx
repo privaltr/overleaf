@@ -391,67 +391,21 @@ export default function TemplateLibraryPanel() {
 
       <div className="border-bottom template-library-toolbar">
         <div className="template-library-search-row">
-          <div className="template-library-filter-group">
-            <Form.Control
-              type="search"
-              value={query}
-              onChange={event => setQuery(event.target.value)}
-              placeholder="Search all templates..."
-              aria-label="Search templates"
-              size="sm"
-            />
+          <Form.Control
+            className="template-library-search-input"
+            type="search"
+            value={query}
+            onChange={event => setQuery(event.target.value)}
+            placeholder="Search all templates..."
+            aria-label="Search templates"
+            size="sm"
+          />
 
-            <Dropdown autoClose="outside">
-              <Dropdown.Toggle
-                as={Button}
-                size="sm"
-                variant="outline-secondary"
-                className="template-library-filter-toggle"
-                aria-label={t('categories')}
-              >
-                <span className="visually-hidden">Open category filter</span>
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu align="start">
-                {availableCategories.length === 0 ? (
-                  <Dropdown.Item disabled>No categories</Dropdown.Item>
-                ) : (
-                  availableCategories.map(category => (
-                    <label
-                      key={category}
-                      className="template-library-category-check"
-                    >
-                      <div className="form-checkbox">
-                        <input
-                          autoComplete="off"
-                          aria-label={`Select ${category}`}
-                          type="checkbox"
-                          className="form-check-input"
-                          checked={categoriesFilter.includes(category)}
-                          onChange={event => {
-                            if (event.target.checked) {
-                              setCategoriesFilter(current =>
-                                current.includes(category)
-                                  ? current
-                                  : current.concat(category)
-                              )
-                            } else {
-                              setCategoriesFilter(current =>
-                                current.filter(value => value !== category)
-                              )
-                            }
-                          }}
-                        />
-                      </div>
-                      <span>{category}</span>
-                    </label>
-                  ))
-                )}
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-
-          <Dropdown as={ButtonGroup} className="template-library-search-action">
+          <Dropdown
+            autoClose="outside"
+            as={ButtonGroup}
+            className="template-library-search-action"
+          >
             <Button
               variant="success"
               size="sm"
@@ -463,12 +417,51 @@ export default function TemplateLibraryPanel() {
               split
               variant="success"
               size="sm"
-              aria-label="Template actions"
+              aria-label="Search options"
             />
             <Dropdown.Menu align="end">
               <Dropdown.Item onClick={startCreate}>
                 {t('new')}
               </Dropdown.Item>
+
+              <Dropdown.Divider />
+
+              <Dropdown.Header>{t('categories')}</Dropdown.Header>
+
+              {availableCategories.length === 0 ? (
+                <Dropdown.Item disabled>No categories</Dropdown.Item>
+              ) : (
+                availableCategories.map(category => (
+                  <label
+                    key={category}
+                    className="template-library-category-check"
+                  >
+                    <div className="form-checkbox">
+                      <input
+                        autoComplete="off"
+                        aria-label={`Select ${category}`}
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={categoriesFilter.includes(category)}
+                        onChange={event => {
+                          if (event.target.checked) {
+                            setCategoriesFilter(current =>
+                              current.includes(category)
+                                ? current
+                                : current.concat(category)
+                            )
+                          } else {
+                            setCategoriesFilter(current =>
+                              current.filter(value => value !== category)
+                            )
+                          }
+                        }}
+                      />
+                    </div>
+                    <span>{category}</span>
+                  </label>
+                ))
+              )}
             </Dropdown.Menu>
           </Dropdown>
         </div>
