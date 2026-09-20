@@ -434,30 +434,35 @@ export default function TemplateLibraryPanel() {
                 availableCategories.map(category => (
                   <label
                     key={category}
-                    className="template-library-category-check"
+                    className="template-library-category-check dropdown-item"
                   >
-                    <div className="form-checkbox">
-                      <input
-                        autoComplete="off"
-                        aria-label={`Select ${category}`}
-                        type="checkbox"
-                        className="form-check-input"
-                        checked={categoriesFilter.includes(category)}
-                        onChange={event => {
-                          if (event.target.checked) {
-                            setCategoriesFilter(current =>
-                              current.includes(category)
-                                ? current
-                                : current.concat(category)
-                            )
-                          } else {
-                            setCategoriesFilter(current =>
-                              current.filter(value => value !== category)
-                            )
-                          }
-                        }}
-                      />
-                    </div>
+                    <input
+                      autoComplete="off"
+                      aria-label={`Select ${category}`}
+                      type="checkbox"
+                      className="visually-hidden"
+                      checked={categoriesFilter.includes(category)}
+                      onChange={event => {
+                        if (event.target.checked) {
+                          setCategoriesFilter(current =>
+                            current.includes(category)
+                              ? current
+                              : current.concat(category)
+                          )
+                        } else {
+                          setCategoriesFilter(current =>
+                            current.filter(value => value !== category)
+                          )
+                        }
+                      }}
+                    />
+                    <span
+                      className="material-symbols template-library-category-checkmark"
+                      aria-hidden="true"
+                      translate="no"
+                    >
+                      {categoriesFilter.includes(category) ? 'check' : ''}
+                    </span>
                     <span>{category}</span>
                   </label>
                 ))
