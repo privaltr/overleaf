@@ -221,16 +221,6 @@ export default function TemplateLibraryPanel() {
       <div className="h-100 d-flex flex-column template-library-panel">
         <RailPanelHeader
           title={editingId ? 'Edit ' + t('template') : 'New ' + t('template')}
-          actions={
-            <Button
-              variant="link"
-              size="sm"
-              onClick={closeEditor}
-              disabled={busy}
-            >
-              {t('cancel')}
-            </Button>
-          }
         />
 
         <div className="overflow-auto p-3 template-library-form">
@@ -278,17 +268,26 @@ export default function TemplateLibraryPanel() {
                 }}
               />
 
-              <Dropdown autoClose="outside">
-                <Dropdown.Toggle
+              <Dropdown
+                autoClose="outside"
+                as={ButtonGroup}
+                className="template-library-category-action"
+              >
+                <Button
                   size="sm"
                   variant="outline-secondary"
+                  onClick={addCategory}
+                  disabled={!categoryInput.trim() || busy}
                 >
-                  Existing
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu
-                  style={{ maxHeight: 240, overflowY: 'auto' }}
-                >
+                  Add
+                </Button>
+                <Dropdown.Toggle
+                  split
+                  size="sm"
+                  variant="outline-secondary"
+                  aria-label="Existing categories"
+                />
+                <Dropdown.Menu align="end">
                   {availableCategories.length === 0 ? (
                     <Dropdown.Item disabled>
                       No existing categories
@@ -371,6 +370,7 @@ export default function TemplateLibraryPanel() {
                 {t('insert')}
               </Button>
               <Button
+                variant="success"
                 onClick={() => save()}
                 disabled={busy || !draft.title.trim()}
               >
