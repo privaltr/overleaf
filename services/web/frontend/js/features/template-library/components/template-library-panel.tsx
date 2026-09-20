@@ -228,6 +228,7 @@ export default function TemplateLibraryPanel() {
             <Form.Label>{t('title')}</Form.Label>
             <Form.Control
               autoFocus
+              size="sm"
               value={draft.title}
               onChange={event =>
                 setDraft({
@@ -257,6 +258,7 @@ export default function TemplateLibraryPanel() {
             <Form.Label className="template-library-field-label">{t('categories')}</Form.Label>
             <div className="d-flex gap-2 mb-2">
               <Form.Control
+                size="sm"
                 value={categoryInput}
                 placeholder="New category"
                 onChange={event => setCategoryInput(event.target.value)}
@@ -353,6 +355,7 @@ export default function TemplateLibraryPanel() {
           <div className="template-library-form-actions">
             <Button
               variant="outline-secondary"
+              size="sm"
               onClick={closeEditor}
               disabled={busy}
             >
@@ -361,6 +364,7 @@ export default function TemplateLibraryPanel() {
             <div className="d-flex gap-2">
               <Button
                 variant="outline-primary"
+                size="sm"
                 onClick={() => {
                   insertContent(draft.content)
                   closeEditor()
@@ -371,6 +375,7 @@ export default function TemplateLibraryPanel() {
               </Button>
               <Button
                 variant="success"
+                size="sm"
                 onClick={() => save()}
                 disabled={busy || !draft.title.trim()}
               >
