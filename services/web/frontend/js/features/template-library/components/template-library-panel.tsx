@@ -299,12 +299,12 @@ export default function TemplateLibraryPanel() {
                       <Dropdown.Item
                         key={category}
                         onClick={() => {
-                          if (!draft.categories.includes(category)) {
-                            setDraft({
-                              ...draft,
-                              categories: draft.categories.concat(category),
-                            })
-                          }
+                          setDraft({
+                            ...draft,
+                            categories: draft.categories.includes(category)
+                              ? draft.categories.filter(value => value !== category)
+                              : draft.categories.concat(category),
+                          })
                         }}
                       >
                         <span
