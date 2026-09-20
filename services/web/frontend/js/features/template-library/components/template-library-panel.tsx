@@ -258,7 +258,7 @@ export default function TemplateLibraryPanel() {
           </Form.Group>
 
           <Form.Group className="mb-4">
-            <Form.Label className="template-library-field-label">{t('categories')}</Form.Label>
+            <Form.Label className="template-library-field-label">{t('Categories')}</Form.Label>
             <div className="d-flex gap-2 mb-2">
               <Form.Control
                 size="sm"
@@ -442,7 +442,7 @@ export default function TemplateLibraryPanel() {
 
               <Dropdown.Divider />
 
-              <Dropdown.Header>{t('categories')}</Dropdown.Header>
+              <Dropdown.Header>{t('Categories')}</Dropdown.Header>
 
               {availableCategories.length === 0 ? (
                 <Dropdown.Item disabled>No categories</Dropdown.Item>
