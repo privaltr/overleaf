@@ -363,6 +363,7 @@
   z-index: 100;
   padding: 8px !important;
   background: var(--bg-primary-themed);
+  border-color: var(--border-color-themed) !important;
 }
 
 .template-library-list {
@@ -376,109 +377,40 @@
   gap: 0.25rem;
 }
 
-.template-library-filter-group {
-  position: relative;
-  display: flex;
-  align-items: stretch;
+.template-library-search-input {
   flex: 1 1 auto;
   min-width: 0;
-  isolation: isolate;
-  border-radius: var(--bs-border-radius);
 }
 
-.template-library-filter-group .form-control {
-  position: relative;
-  z-index: 1;
-  flex: 1 1 auto;
-  min-width: 0;
-  margin: 0;
-  background-color: var(--bg-secondary-themed);
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.template-library-filter-toggle {
-  position: relative;
-  z-index: 1;
+.template-library-search-action {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  min-width: 2.25rem;
-  flex: 0 0 2.25rem;
-  margin-left: -1px;
-  padding: 0 0.25rem;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-color: var(--border-color-themed);
-  color: var(--content-color);
-  background: var(--bg-secondary-themed);
+  align-self: stretch;
+  flex: 0 0 auto;
 }
 
-.template-library-filter-toggle:hover,
-.template-library-filter-toggle:focus,
-.template-library-filter-toggle:active,
-.template-library-filter-toggle.show {
-  color: var(--content-color);
-  background: var(--bg-tertiary-themed);
-  border-color: var(--border-color-themed);
+.template-library-search-action > .btn {
+  height: auto;
 }
 
-.template-library-filter-toggle.dropdown-toggle::after {
-  margin-left: 0;
-  transform: translateX(-2px);
+.template-library-search-action .btn {
+  padding: 2px 6px;
 }
 
-.template-library-filter-toggle.no-default-caret::after {
-  content: none !important;
+.template-library-search-action .btn-success {
+  font-weight: 600;
 }
 
-.template-library-filter-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.125rem;
-  line-height: 1;
+.template-library-search-action .dropdown-toggle {
+  min-width: 2rem;
 }
 
-.template-library-filter-group:focus-within::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--bs-border-radius);
-  pointer-events: none;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-  z-index: 3;
-}
-
-.template-library-filter-group .form-control:focus,
-.template-library-filter-group .template-library-filter-toggle:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-/*
- * Use the same dropdown tokens as Overleaf's native dropdown-menu.
- * In the dark theme this resolves to a 1px primary border; in the light
- * theme it follows the native transparent border setting.
- */
-.template-library-panel .dropdown-menu {
+.template-library-search-action .dropdown-menu {
   z-index: 3000 !important;
   min-width: 240px;
-  color: var(--dropdown-text-color);
-  background-color: var(--dropdown-background) !important;
-  border: var(--dropdown-border-width) solid var(--dropdown-border-color) !important;
-  border-radius: var(--border-radius-base);
-  box-shadow: var(--bs-box-shadow);
-  opacity: 1 !important;
-  background-image: none !important;
-  background-clip: padding-box;
 }
 
-.template-library-filter-group .dropdown-menu {
-  position: absolute;
-  margin-top: var(--spacing-01);
-  overflow: visible;
+.template-library-search-action .dropdown-menu .dropdown-header {
+  color: var(--dropdown-header-text-color);
 }
 
 .template-library-category-check {
@@ -492,13 +424,6 @@
   cursor: pointer;
 }
 
-/*
- * Keep the native Overleaf checkbox styling. The only local visual
- * overrides are the same base background/border tokens used by
- * .form-checkbox .form-check-input and the 4px checkbox radius.
- * Checked state, checkmark, hover and focus come from Overleaf's
- * native .form-checkbox rules.
- */
 .template-library-category-check .form-checkbox {
   display: flex;
   align-items: center;
@@ -535,18 +460,4 @@
 
 .template-library-category-check:hover {
   background-color: var(--dropdown-background-hover);
-}
-
-
-/* Keep card action menus above the Insert button and card content. */
-.template-library-card-action {
-  position: relative;
-  z-index: 10;
-}
-
-.template-library-card-action .dropdown-menu {
-  z-index: 3000 !important;
-  background-color: var(--dropdown-background) !important;
-  border: var(--dropdown-border-width) solid var(--dropdown-border-color) !important;
-  box-shadow: var(--bs-box-shadow);
 }
