@@ -537,20 +537,3 @@
   border-color: transparent !important;
   box-shadow: none !important;
 }
-
-
-.template-library-search-input:focus,
-.template-library-search-input:focus-visible,
-.template-library-form .form-control:focus,
-.template-library-form .form-control:focus-visible,
-.template-library-form .form-select:focus,
-.template-library-form .form-select:focus-visible {
-  border-color: var(--link-color-themed) !important;
-  outline: 0 !important;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
-  box-shadow: 0 0 0 0.25rem color-mix(
-    in srgb,
-    var(--link-color-themed) 25%,
-    transparent
-  ) !important;
-}
