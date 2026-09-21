@@ -512,3 +512,11 @@
   background-image: none !important;
   background-clip: padding-box;
 }
+
+
+/* Match the native Overleaf split-button separator on green actions. */
+.template-library-search-action > .dropdown-toggle,
+.template-library-card-action > .dropdown-toggle,
+.template-library-save-action > .dropdown-toggle {
+  border-left-color: color-mix(in srgb, var(--bs-btn-bg) 88%, black) !important;
+}
