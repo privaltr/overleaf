@@ -9,7 +9,9 @@ import {
 import { getTemplates, TemplateSnippet } from './util/api'
 import { relevanceScore } from './util/search'
 
-const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/\n\nconst setTemplateMarkers = StateEffect.define<RangeSet<TemplateMarker>>()
+const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/
+
+const setTemplateMarkers = StateEffect.define<RangeSet<TemplateMarker>>()
 
 type TemplateMatch = {
   lineFrom: number
@@ -180,13 +182,21 @@ class TemplateMarkerPlugin {
     return builder.finish()
   }
 
-  updateMarkers() {\n    this.view.dispatch({\n      effects: setTemplateMarkers.of(this.createMarkers()),\n    })\n  }\n\n  insert(templateMatch: TemplateMatch) {
+  updateMarkers() {
+    this.view.dispatch({
+      effects: setTemplateMarkers.of(this.createMarkers()),
+    })
+  }
+
+  insert(templateMatch: TemplateMatch) {
     const line = this.view.state.doc.lineAt(templateMatch.lineFrom)
     const content = templateMatch.template.content.replace(/\s+$/, '')
     if (!content) return
 
     this.checkedPositions.add(line.from)
-    const insertion = '\n' + content + '\n'
+    const insertion = '
+' + content + '
+'
 
     this.view.dispatch({
       changes: {
@@ -288,7 +298,8 @@ export const templateInsertion = () => [
       },
     }
   }),
-  templateMarkerState,\n  templateMarkerPlugin,
+  templateMarkerState,
+  templateMarkerPlugin,
   templateMarkerGutter,
   templateMarkerTheme,
 ]
