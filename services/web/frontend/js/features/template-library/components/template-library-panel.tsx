@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-header'
 import OLFormControl from '@/shared/components/ol/ol-form-control'
 import OLButton from '@/shared/components/ol/ol-button'
+import OLIconButton from '@/shared/components/ol/ol-icon-button'
 import getMeta from '@/utils/meta'
 import { getUserFacingMessage } from '../../../infrastructure/fetch-json'
 import {
@@ -241,6 +242,15 @@ export default function TemplateLibraryPanel() {
       <div className="h-100 d-flex flex-column template-library-panel">
         <RailPanelHeader
           title={editingId ? 'Edit ' + t('template') : 'New ' + t('template')}
+          actions={
+            <OLIconButton
+              onClick={closeEditor}
+              className="rail-panel-header-button-subdued"
+              icon="close"
+              accessibilityLabel={t('close')}
+              size="sm"
+            />
+          }
         />
 
         <div className="overflow-auto p-3 template-library-form">
@@ -384,14 +394,6 @@ export default function TemplateLibraryPanel() {
           {error && <div className="alert alert-danger">{error}</div>}
 
           <div className="template-library-form-actions">
-            <Button
-              variant="outline-secondary"
-              size="sm"
-              onClick={closeEditor}
-              disabled={busy}
-            >
-              {t('cancel')}
-            </Button>
             <Dropdown
               autoClose="outside"
               as={ButtonGroup}
