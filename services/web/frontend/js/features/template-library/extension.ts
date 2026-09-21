@@ -1,4 +1,4 @@
-import { RangeSet, RangeSetBuilder, StateEffect, StateField } from '@codemirror/state'
+import { RangeSet, RangeSetBuilder } from '@codemirror/state'
 import {
   EditorView,
   GutterMarker,
@@ -10,8 +10,6 @@ import { getTemplates, TemplateSnippet } from './util/api'
 import { relevanceScore } from './util/search'
 
 const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/
-
-const setTemplateMarkers = StateEffect.define<RangeSet<TemplateMarker>>()
 
 type TemplateMatch = {
   lineFrom: number
@@ -59,7 +57,7 @@ function findTemplateMatch(
       return a.template.title.localeCompare(b.template.title)
     })
 
-  return matches.length === 1 ? matches[0].template : null
+  if (matches.length !== 1) return null\n\n  return matches[0].template
 }
 
 class TemplateMarker extends GutterMarker {
