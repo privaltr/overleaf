@@ -143,6 +143,8 @@ export default function TemplateLibraryPanel() {
         ? await updateTemplate(editingId, draft)
         : await createTemplate(draft)
 
+      window.dispatchEvent(new CustomEvent('ui:templates-changed'))
+
       if (editingId) {
         setTemplates(current =>
           current.map(template =>
@@ -175,6 +177,7 @@ export default function TemplateLibraryPanel() {
       setTemplates(current =>
         current.filter(currentTemplate => currentTemplate.id !== template.id)
       )
+      window.dispatchEvent(new CustomEvent('ui:templates-changed'))
 
       if (editingId === template.id) {
         closeEditor()
@@ -193,6 +196,7 @@ export default function TemplateLibraryPanel() {
     try {
       const copy = await duplicateTemplate(template.id)
       setTemplates(current => [copy, ...current])
+      window.dispatchEvent(new CustomEvent('ui:templates-changed'))
     } catch (duplicateError) {
       setError(
         getUserFacingMessage(duplicateError) || 'Unable to duplicate template.'
