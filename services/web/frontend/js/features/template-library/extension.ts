@@ -195,7 +195,6 @@ class TemplateMarkerPlugin {
 
     this.checkedPositions.add(line.from)
     const insertion = '\n' + content + '\n'
-'
 
     this.view.dispatch({
       changes: {
