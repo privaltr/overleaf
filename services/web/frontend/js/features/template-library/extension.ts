@@ -326,10 +326,23 @@ export const templateInsertion = () => [
       view.focus()
     }
 
+    const linkHandler = (event: Event) => {
+      const content = (event as CustomEvent<{ content?: unknown }>).detail
+        ?.content
+
+      if (typeof content !== 'string' || !view.dom.isConnected) return
+
+      view.dispatch(view.state.replaceSelection(content))
+      view.focus()
+    }
+
     window.addEventListener('ui:insert-template', handler)
+    window.addEventListener('ui:insert-template-link', linkHandler)
+
     return {
       destroy() {
         window.removeEventListener('ui:insert-template', handler)
+        window.removeEventListener('ui:insert-template-link', linkHandler)
       },
     }
   }),
