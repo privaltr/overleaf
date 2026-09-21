@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-header'
 import OLFormControl from '@/shared/components/ol/ol-form-control'
 import OLButton from '@/shared/components/ol/ol-button'
+import OLIconButton from '@/shared/components/ol/ol-icon-button'
 import getMeta from '@/utils/meta'
 import { getUserFacingMessage } from '../../../infrastructure/fetch-json'
 import {
@@ -239,27 +240,20 @@ export default function TemplateLibraryPanel() {
   if (draft) {
     return (
       <div className="h-100 d-flex flex-column template-library-panel">
-        <RailPanelHeader
-          title={editingId ? 'Edit ' + t('template') : 'New ' + t('template')}
-          actions={
-            <button
-              type="button"
-              className="template-library-editor-close"
+        <div className="rail-panel-header">
+          <h4 className="rail-panel-title">
+            {editingId ? 'Edit ' + t('template') : 'New ' + t('template')}
+          </h4>
+          <div className="rail-panel-header-actions">
+            <OLIconButton
               onClick={closeEditor}
-              aria-label={t('close')}
-            >
-              <span className="button-content" aria-hidden="false">
-                <span
-                  className="material-symbols icon-small"
-                  aria-hidden="true"
-                  translate="no"
-                >
-                  close
-                </span>
-              </span>
-            </button>
-          }
-        />
+              className="rail-panel-header-button-subdued"
+              icon="close"
+              accessibilityLabel={t('close')}
+              size="sm"
+            />
+          </div>
+        </div>
 
         <div className="overflow-auto p-3 template-library-form">
           <Form.Group className="mb-3">
