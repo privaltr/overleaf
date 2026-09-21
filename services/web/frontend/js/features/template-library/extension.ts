@@ -160,24 +160,22 @@ class TemplateMarkerPlugin {
   }
 
   markers() {
-    const builder = new RangeSetBuilder<TemplateMarker>()
+    const markers: ReturnType<TemplateMarker['range']>[] = []
 
     for (let lineNumber = 1; lineNumber <= this.view.state.doc.lines; lineNumber++) {
       const line = this.view.state.doc.line(lineNumber)
       const template = findTemplateMatch(this.templates, line.text)
       if (!template) continue
 
-      builder.add(
-        line.from,
-        line.from,
+      markers.push(
         new TemplateMarker(
           template,
           this.checkedPositions.has(line.from)
-        )
+        ).range(line.from)
       )
     }
 
-    return builder.finish()
+    return RangeSet.of(markers, true)
   }
 
   insert(templateMatch: TemplateMatch) {
