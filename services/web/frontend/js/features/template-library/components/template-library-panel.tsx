@@ -422,7 +422,7 @@ export default function TemplateLibraryPanel() {
                 <Dropdown.Item
                   onClick={() => save('insert-link')}
                   disabled={
-                    busy || !draft.title.trim() || draft.categories.length === 0
+                    busy || !draft.title.trim()
                   }
                 >
                   Insert Link
