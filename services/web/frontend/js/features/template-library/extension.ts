@@ -127,7 +127,7 @@ class TemplateMarkerPlugin {
     try {
       this.templates = await getTemplates()
       this.pruneCheckedPositions(this.view)
-      this.updateMarkers()
+      this.view.dispatch({})
     } catch {
       // Template markers are an optional enhancement. Ignore unavailable templates.
     }
@@ -161,7 +161,7 @@ class TemplateMarkerPlugin {
     }
   }
 
-  createMarkers() {
+  markers() {
     const builder = new RangeSetBuilder<TemplateMarker>()
 
     for (let lineNumber = 1; lineNumber <= this.view.state.doc.lines; lineNumber++) {
@@ -182,53 +182,34 @@ class TemplateMarkerPlugin {
     return builder.finish()
   }
 
-  updateMarkers() {
-    this.view.dispatch({
-      effects: setTemplateMarkers.of(this.createMarkers()),
-    })
-  }
-
   insert(templateMatch: TemplateMatch) {
     const line = this.view.state.doc.lineAt(templateMatch.lineFrom)
-    const content = templateMatch.template.content.replace(/\s+$/, '')
+    const content = templateMatch.template.content.replace(/\\s+$/, '')
     if (!content) return
 
     this.checkedPositions.add(line.from)
-    const insertion = '\n' + content + '\n'
 
     this.view.dispatch({
       changes: {
         from: line.to,
         to: line.to,
-        insert: insertion,
+        insert: '\\n' + content + '\\n',
       },
     })
 
-    this.updateMarkers()
+    this.view.dispatch({})
     this.view.focus()
   }
 }
 
 const templateMarkerPlugin = ViewPlugin.fromClass(TemplateMarkerPlugin)
 
-
-const templateMarkerState = StateField.define<RangeSet<TemplateMarker>>({
-  create() {
-    return RangeSet.empty
-  },
-  update(value, transaction) {
-    for (const effect of transaction.effects) {
-      if (effect.is(setTemplateMarkers)) return effect.value
-    }
-    return transaction.docChanged ? value.map(transaction.changes) : value
-  },
-})
-
 const templateMarkerGutter = gutter({
   class: 'ol-cm-template-gutter',
   markers(view) {
-    return view.state.field(templateMarkerState)
+    return view.plugin(templateMarkerPlugin)?.markers() ?? RangeSet.empty
   },
+  renderEmptyElements: true,
   domEventHandlers: {
     mousedown(view, line, event) {
       const target = event.target as HTMLElement
