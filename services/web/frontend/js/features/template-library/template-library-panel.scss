@@ -520,3 +520,23 @@
 .template-library-save-action > .dropdown-toggle {
   border-left-color: color-mix(in srgb, var(--bs-btn-bg) 88%, black) !important;
 }
+
+
+.template-library-editor-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--border-radius-base);
+  background: transparent;
+  color: var(--content-color-secondary);
+  cursor: pointer;
+}
+
+.template-library-editor-close:hover {
+  color: var(--content-color);
+  background-color: var(--bg-light-secondary);
+}
