@@ -185,7 +185,8 @@ class TemplateMarkerPlugin {
     const content = templateMatch.template.content.replace(/\s+$/, '')
     if (!content) return
 
-    const insertion = '\\n' + content + '\\n'
+    this.checkedPositions.add(line.from)
+    const insertion = '\n' + content + '\n'
 
     this.view.dispatch({
       changes: {
@@ -195,8 +196,6 @@ class TemplateMarkerPlugin {
       },
     })
 
-    this.checkedPositions.add(line.from)
-    this.view.requestMeasure()
     this.view.focus()
   }
 }
