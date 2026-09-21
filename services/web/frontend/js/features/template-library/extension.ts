@@ -1,4 +1,4 @@
-import { RangeSet, RangeSetBuilder, StateEffect } from '@codemirror/state'
+import { EditorState, RangeSet, RangeSetBuilder, StateEffect, StateField } from '@codemirror/state'
 import {
   EditorView,
   GutterMarker,
@@ -9,7 +9,7 @@ import {
 import { getTemplates, TemplateSnippet } from './util/api'
 import { relevanceScore } from './util/search'
 
-const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/\nconst templatesChanged = StateEffect.define<null>()
+const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/\nconst setTemplateMarkers = StateEffect.define<RangeSet<TemplateMarker>>()
 
 type TemplateMatch = {
   lineFrom: number
@@ -125,7 +125,7 @@ class TemplateMarkerPlugin {
     try {
       this.templates = await getTemplates()
       this.pruneCheckedPositions(this.view)
-      this.view.requestMeasure()
+      this.updateMarkers()
     } catch {
       // Template markers are an optional enhancement. Ignore unavailable templates.
     }
@@ -159,7 +159,7 @@ class TemplateMarkerPlugin {
     }
   }
 
-  markers() {
+  createMarkers() {
     const builder = new RangeSetBuilder<TemplateMarker>()
 
     for (let lineNumber = 1; lineNumber <= this.view.state.doc.lines; lineNumber++) {
@@ -180,7 +180,7 @@ class TemplateMarkerPlugin {
     return builder.finish()
   }
 
-  insert(templateMatch: TemplateMatch) {
+  updateMarkers() {\n    this.view.dispatch({\n      effects: setTemplateMarkers.of(this.createMarkers()),\n    })\n  }\n\n  insert(templateMatch: TemplateMatch) {
     const line = this.view.state.doc.lineAt(templateMatch.lineFrom)
     const content = templateMatch.template.content.replace(/\s+$/, '')
     if (!content) return
@@ -202,10 +202,23 @@ class TemplateMarkerPlugin {
 
 const templateMarkerPlugin = ViewPlugin.fromClass(TemplateMarkerPlugin)
 
+
+const templateMarkerState = StateField.define<RangeSet<TemplateMarker>>({
+  create() {
+    return RangeSet.empty
+  },
+  update(value, transaction) {
+    for (const effect of transaction.effects) {
+      if (effect.is(setTemplateMarkers)) return effect.value
+    }
+    return transaction.docChanged ? value.map(transaction.changes) : value
+  },
+})
+
 const templateMarkerGutter = gutter({
   class: 'ol-cm-template-gutter',
   markers(view) {
-    return view.plugin(templateMarkerPlugin)?.markers() ?? RangeSet.empty
+    return view.state.field(templateMarkerState)
   },
   domEventHandlers: {
     mousedown(view, line, event) {
@@ -275,7 +288,7 @@ export const templateInsertion = () => [
       },
     }
   }),
-  templateMarkerPlugin,
+  templateMarkerState,\n  templateMarkerPlugin,
   templateMarkerGutter,
   templateMarkerTheme,
 ]
