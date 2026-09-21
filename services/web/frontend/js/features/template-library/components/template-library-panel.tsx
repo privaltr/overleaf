@@ -241,7 +241,24 @@ export default function TemplateLibraryPanel() {
       <div className="h-100 d-flex flex-column template-library-panel">
         <RailPanelHeader
           title={editingId ? 'Edit ' + t('template') : 'New ' + t('template')}
-          onClose={closeEditor}
+          actions={
+            <button
+              type="button"
+              className="template-library-editor-close"
+              onClick={closeEditor}
+              aria-label={t('close')}
+            >
+              <span className="button-content" aria-hidden="false">
+                <span
+                  className="material-symbols icon-small"
+                  aria-hidden="true"
+                  translate="no"
+                >
+                  close
+                </span>
+              </span>
+            </button>
+          }
         />
 
         <div className="overflow-auto p-3 template-library-form">
