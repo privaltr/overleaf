@@ -276,7 +276,6 @@ export const templateInsertion = () => [
       },
     }
   }),
-  templateMarkerState,
   templateMarkerPlugin,
   templateMarkerGutter,
   templateMarkerTheme,
