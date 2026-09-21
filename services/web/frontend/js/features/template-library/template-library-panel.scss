@@ -489,3 +489,26 @@
   font-size: 20px;
   line-height: 20px;
 }
+
+
+.template-library-save-action {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.template-library-save-action > .btn {
+  margin: 0;
+}
+
+.template-library-save-action .dropdown-menu {
+  z-index: 3000 !important;
+  min-width: 160px;
+  color: var(--dropdown-text-color);
+  background-color: var(--dropdown-background) !important;
+  border: var(--dropdown-border-width) solid var(--dropdown-border-color) !important;
+  border-radius: var(--border-radius-base);
+  box-shadow: var(--bs-box-shadow);
+  opacity: 1 !important;
+  background-image: none !important;
+  background-clip: padding-box;
+}
