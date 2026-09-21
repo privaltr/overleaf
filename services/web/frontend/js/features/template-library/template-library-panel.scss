@@ -57,13 +57,7 @@
 .template-library-form .form-control:focus-visible {
   background-color: var(--bg-primary-themed);
   color: var(--content-color);
-  border-color: var(--link-color-themed) !important;
-  outline: 0 !important;
-  box-shadow: 0 0 0 0.25rem color-mix(
-    in srgb,
-    var(--link-color-themed) 25%,
-    transparent
-  ) !important;
+  border-color: var(--link-color-themed);
 }
 
 .template-library-form textarea.form-control:not(.font-monospace)::placeholder {
