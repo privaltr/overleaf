@@ -533,8 +533,23 @@ export default function TemplateLibraryPanel() {
                     <Dropdown.Item onClick={() => duplicate(template)}>
                       Duplicate
                     </Dropdown.Item>
-                    <Dropdown.Item onClick={() => insert(template)}>
-                      {t('insert')}
+                    <Dropdown.Divider />
+                    <Dropdown.Item
+                      onClick={() => {
+                        window.dispatchEvent(
+                          new CustomEvent('ui:insert-template-link', {
+                            detail: {
+                              content:
+                                '%% template: [' +
+                                template.categories.join(',') +
+                                '] ' +
+                                template.title,
+                            },
+                          })
+                        )
+                      }}
+                    >
+                      Insert Link
                     </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item
