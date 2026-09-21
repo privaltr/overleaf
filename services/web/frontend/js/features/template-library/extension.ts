@@ -244,7 +244,11 @@ const templateMarkerTheme = EditorView.baseTheme({
     cursor: 'pointer',
     opacity: '0.75',
   },
-  '.ol-cm-template-marker.is-checked': {\n    color: 'var(--success-color, #198754)',\n    opacity: '1',\n  },\n  '.ol-cm-template-marker:hover': {
+  '.ol-cm-template-marker.is-checked': {
+    color: 'var(--success-color, #198754)',
+    opacity: '1',
+  },
+  '.ol-cm-template-marker:hover': {
     color: 'var(--link-color-themed)',
     opacity: '1',
   },
