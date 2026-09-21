@@ -132,7 +132,7 @@ export default function TemplateLibraryPanel() {
     })
   }
 
-  const save = async () => {
+  const save = async (action: 'save' | 'insert' | 'insert-link' = 'save') => {
     if (!draft || !draft.title.trim()) return
 
     setBusy(true)
@@ -153,6 +153,22 @@ export default function TemplateLibraryPanel() {
         )
       } else {
         setTemplates(current => [saved, ...current])
+      }
+
+      if (action === 'insert') {
+        insertContent(saved.content)
+      } else if (action === 'insert-link') {
+        window.dispatchEvent(
+          new CustomEvent('ui:insert-template-link', {
+            detail: {
+              content:
+                '%% template: [' +
+                saved.categories.join(',') +
+                '] ' +
+                saved.title,
+            },
+          })
+        )
       }
 
       closeEditor()
@@ -376,18 +392,11 @@ export default function TemplateLibraryPanel() {
             >
               {t('cancel')}
             </Button>
-            <div className="d-flex gap-2">
-              <Button
-                variant="outline-primary"
-                size="sm"
-                onClick={() => {
-                  insertContent(draft.content)
-                  closeEditor()
-                }}
-                disabled={busy || !draft.content.trim()}
-              >
-                {t('insert')}
-              </Button>
+            <Dropdown
+              autoClose="outside"
+              as={ButtonGroup}
+              className="template-library-save-action"
+            >
               <Button
                 variant="success"
                 size="sm"
@@ -396,7 +405,30 @@ export default function TemplateLibraryPanel() {
               >
                 {busy ? 'Saving…' : t('save')}
               </Button>
-            </div>
+              <Dropdown.Toggle
+                split
+                variant="success"
+                size="sm"
+                aria-label="Save options"
+                disabled={busy || !draft.title.trim()}
+              />
+              <Dropdown.Menu align="end">
+                <Dropdown.Item
+                  onClick={() => save('insert')}
+                  disabled={busy || !draft.content.trim()}
+                >
+                  {t('insert')}
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => save('insert-link')}
+                  disabled={
+                    busy || !draft.title.trim() || draft.categories.length === 0
+                  }
+                >
+                  Insert Link
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
       </div>
