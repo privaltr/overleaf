@@ -53,11 +53,17 @@
   border-color: var(--border-color-themed);
 }
 
-.template-library-form .form-control:focus {
+.template-library-form .form-control:focus,
+.template-library-form .form-control:focus-visible {
   background-color: var(--bg-primary-themed);
   color: var(--content-color);
-  border-color: var(--link-color-themed);
-  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--link-color-themed) 25%, transparent);
+  border-color: var(--link-color-themed) !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 0.25rem color-mix(
+    in srgb,
+    var(--link-color-themed) 25%,
+    transparent
+  ) !important;
 }
 
 .template-library-form textarea.form-control:not(.font-monospace)::placeholder {
