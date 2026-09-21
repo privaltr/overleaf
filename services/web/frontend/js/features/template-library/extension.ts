@@ -1,4 +1,4 @@
-import { RangeSet, RangeSetBuilder } from '@codemirror/state'
+import { RangeSet, RangeSetBuilder, StateEffect } from '@codemirror/state'
 import {
   EditorView,
   GutterMarker,
@@ -9,7 +9,7 @@ import {
 import { getTemplates, TemplateSnippet } from './util/api'
 import { relevanceScore } from './util/search'
 
-const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/
+const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/\nconst templatesChanged = StateEffect.define<null>()
 
 type TemplateMatch = {
   lineFrom: number
