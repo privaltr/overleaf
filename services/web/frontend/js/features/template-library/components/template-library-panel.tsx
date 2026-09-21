@@ -533,6 +533,9 @@ export default function TemplateLibraryPanel() {
                     <Dropdown.Item onClick={() => duplicate(template)}>
                       Duplicate
                     </Dropdown.Item>
+                    <Dropdown.Item onClick={() => insert(template)}>
+                      {t('insert')}
+                    </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item
                       className="template-library-delete-item"
