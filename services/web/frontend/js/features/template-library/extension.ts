@@ -1,4 +1,4 @@
-import { EditorState, RangeSetBuilder } from '@codemirror/state'
+import { RangeSet, RangeSetBuilder } from '@codemirror/state'
 import {
   EditorView,
   GutterMarker,
@@ -77,7 +77,7 @@ class TemplateMarker extends GutterMarker {
   toDOM() {
     const button = document.createElement('button')
     button.type = 'button'
-    button.className = 'ol-cm-template-marker'
+    button.className = 'ol-cm-template-marker' + (this.checked ? ' is-checked' : '')
     button.title = this.checked
       ? 'Template inserted'
       : 'Insert template: ' + this.template.title
@@ -206,7 +206,7 @@ const templateMarkerPlugin = ViewPlugin.fromClass(TemplateMarkerPlugin)
 const templateMarkerGutter = gutter({
   class: 'ol-cm-template-gutter',
   markers(view) {
-    return view.plugin(templateMarkerPlugin)?.markers() ?? RangeSetBuilder.empty
+    return view.plugin(templateMarkerPlugin)?.markers() ?? RangeSet.empty
   },
   domEventHandlers: {
     mousedown(view, line, event) {
@@ -245,7 +245,7 @@ const templateMarkerTheme = EditorView.baseTheme({
     cursor: 'pointer',
     opacity: '0.75',
   },
-  '.ol-cm-template-marker:hover': {
+  '.ol-cm-template-marker.is-checked': {\n    color: 'var(--success-color, #198754)',\n    opacity: '1',\n  },\n  '.ol-cm-template-marker:hover': {
     color: 'var(--link-color-themed)',
     opacity: '1',
   },
