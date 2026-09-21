@@ -1,4 +1,9 @@
-import { RangeSet, RangeSetBuilder, StateEffect, StateField } from '@codemirror/state'
+import {
+  RangeSet,
+  RangeSetBuilder,
+  StateEffect,
+  StateField,
+} from '@codemirror/state'
 import {
   EditorView,
   GutterMarker,
@@ -6,6 +11,7 @@ import {
   ViewUpdate,
   gutter,
 } from '@codemirror/view'
+import { invertedEffects } from '@codemirror/commands'
 import { getTemplates, TemplateSnippet } from './util/api'
 
 const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/
@@ -91,30 +97,56 @@ class TemplateMarker extends GutterMarker {
   }
 }
 
-const setTemplateMarkers = StateEffect.define<RangeSet<TemplateMarker>>()
+type FulfilledTemplatePositions = Set<number>
 
-const templateMarkerState = StateField.define<RangeSet<TemplateMarker>>({
+const fulfillTemplate = StateEffect.define<number>()
+const unfulfillTemplate = StateEffect.define<number>()
+
+const templateMarkerState = StateField.define<FulfilledTemplatePositions>({
   create() {
-    return RangeSet.empty
+    return new Set()
   },
-  update(markers, transaction) {
+  update(value, transaction) {
+    let nextValue = value
+
+    if (transaction.docChanged) {
+      nextValue = new Set(
+        Array.from(value, position =>
+          transaction.changes.mapPos(position)
+        )
+      )
+    }
+
     for (const effect of transaction.effects) {
-      if (effect.is(setTemplateMarkers)) {
-        return effect.value
+      if (effect.is(fulfillTemplate)) {
+        nextValue = nextValue === value ? new Set(value) : nextValue
+        nextValue.add(effect.value)
+      } else if (effect.is(unfulfillTemplate)) {
+        nextValue = nextValue === value ? new Set(value) : nextValue
+        nextValue.delete(effect.value)
       }
     }
 
-    if (transaction.docChanged) {
-      return markers.map(transaction.changes)
-    }
-
-    return markers
+    return nextValue
   },
+})
+
+const templateMarkerHistory = invertedEffects.of(transaction => {
+  const effects: StateEffect<number>[] = []
+
+  for (const effect of transaction.effects) {
+    if (effect.is(fulfillTemplate)) {
+      effects.push(unfulfillTemplate.of(effect.value))
+    } else if (effect.is(unfulfillTemplate)) {
+      effects.push(fulfillTemplate.of(effect.value))
+    }
+  }
+
+  return effects
 })
 
 class TemplateMarkerPlugin {
   templates: TemplateSnippet[] = []
-  checkedPositions = new Set<number>()
 
   constructor(private readonly view: EditorView) {
     this.handleTemplatesChanged = this.handleTemplatesChanged.bind(this)
@@ -135,17 +167,9 @@ class TemplateMarkerPlugin {
   update(update: ViewUpdate) {
     if (!update.docChanged) return
 
-    const mapped = new Set<number>()
-    for (const position of this.checkedPositions) {
-      mapped.add(update.changes.mapPos(position))
-    }
-
-    this.checkedPositions = mapped
-    this.pruneCheckedPositions(update.view)
-
     window.setTimeout(() => {
       if (this.view.dom.isConnected) {
-        this.updateMarkers()
+        this.view.dispatch({})
       }
     })
   }
@@ -157,34 +181,10 @@ class TemplateMarkerPlugin {
   private async refreshTemplates() {
     try {
       this.templates = await getTemplates()
-      this.pruneCheckedPositions(this.view)
-      this.updateMarkers()
+      this.view.dispatch({})
     } catch {
       // Template markers are an optional enhancement. Ignore unavailable templates.
     }
-  }
-
-  private pruneCheckedPositions(view: EditorView) {
-    const validPositions = new Set<number>()
-
-    for (let lineNumber = 1; lineNumber <= view.state.doc.lines; lineNumber++) {
-      const line = view.state.doc.line(lineNumber)
-      if (parseTemplateMarker(line.text)) {
-        validPositions.add(line.from)
-      }
-    }
-
-    this.checkedPositions = new Set(
-      [...this.checkedPositions].filter(position =>
-        validPositions.has(position)
-      )
-    )
-  }
-
-  private updateMarkers() {
-    this.view.dispatch({
-      effects: setTemplateMarkers.of(this.createMarkers()),
-    })
   }
 
   private getMatch(lineFrom: number): TemplateMatch | null {
@@ -199,9 +199,14 @@ class TemplateMarkerPlugin {
   }
 
   private createMarkers() {
+    const fulfilledPositions = this.view.state.field(templateMarkerState)
     const builder = new RangeSetBuilder<TemplateMarker>()
 
-    for (let lineNumber = 1; lineNumber <= this.view.state.doc.lines; lineNumber++) {
+    for (
+      let lineNumber = 1;
+      lineNumber <= this.view.state.doc.lines;
+      lineNumber++
+    ) {
       const line = this.view.state.doc.line(lineNumber)
       const template = findTemplateMatch(this.templates, line.text)
       if (!template) continue
@@ -211,7 +216,7 @@ class TemplateMarkerPlugin {
         line.from,
         new TemplateMarker(
           template,
-          this.checkedPositions.has(line.from)
+          fulfilledPositions.has(line.from)
         )
       )
     }
@@ -221,10 +226,12 @@ class TemplateMarkerPlugin {
 
   private insert(match: TemplateMatch) {
     const line = this.view.state.doc.lineAt(match.lineFrom)
+    const fulfilledPositions = this.view.state.field(templateMarkerState)
+
+    if (fulfilledPositions.has(line.from)) return
+
     const content = match.template.content.replace(/\s+$/, '')
     if (!content) return
-
-    this.checkedPositions.add(line.from)
 
     this.view.dispatch({
       changes: {
@@ -232,9 +239,9 @@ class TemplateMarkerPlugin {
         to: line.to,
         insert: '\n' + content + '\n',
       },
+      effects: fulfillTemplate.of(line.from),
     })
 
-    this.updateMarkers()
     this.view.focus()
   }
 
@@ -250,13 +257,18 @@ class TemplateMarkerPlugin {
     this.insert(match)
     return true
   }
+
+  markers() {
+    return this.createMarkers()
+  }
 }
 
 const templateMarkerPlugin = ViewPlugin.fromClass(TemplateMarkerPlugin)
 
 const templateMarkerGutter = gutter({
   class: 'ol-cm-template-gutter',
-  markers: view => view.state.field(templateMarkerState),
+  markers: view =>
+    view.plugin(templateMarkerPlugin)?.markers() ?? RangeSet.empty,
   renderEmptyElements: true,
   domEventHandlers: {
     mousedown(view, line, event) {
@@ -322,6 +334,7 @@ export const templateInsertion = () => [
     }
   }),
   templateMarkerState,
+  templateMarkerHistory,
   templateMarkerPlugin,
   templateMarkerGutter,
   templateMarkerTheme,
