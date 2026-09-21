@@ -205,6 +205,7 @@ class TemplateMarkerPlugin {
       },
     })
 
+    this.updateMarkers()
     this.view.focus()
   }
 }
