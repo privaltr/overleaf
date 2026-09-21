@@ -537,3 +537,15 @@
   border-color: transparent !important;
   box-shadow: none !important;
 }
+
+
+.template-library-search-input:focus,
+.template-library-form .form-control:focus {
+  border-color: var(--link-color-themed);
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem color-mix(
+    in srgb,
+    var(--link-color-themed) 25%,
+    transparent
+  );
+}
