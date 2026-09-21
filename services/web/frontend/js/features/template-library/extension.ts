@@ -57,7 +57,9 @@ function findTemplateMatch(
       return a.template.title.localeCompare(b.template.title)
     })
 
-  if (matches.length !== 1) return null\n\n  return matches[0].template
+  if (matches.length !== 1) return null
+
+  return matches[0].template
 }
 
 class TemplateMarker extends GutterMarker {
