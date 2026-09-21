@@ -247,7 +247,7 @@ export default function TemplateLibraryPanel() {
           <div className="rail-panel-header-actions">
             <OLIconButton
               onClick={closeEditor}
-              className="rail-panel-header-button-subdued"
+              className="rail-panel-header-button-subdued template-library-editor-close"
               icon="close"
               accessibilityLabel={t('close')}
               size="sm"
