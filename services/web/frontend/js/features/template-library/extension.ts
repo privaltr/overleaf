@@ -35,7 +35,7 @@ function parseTemplateMarker(lineText: string) {
     .filter(Boolean)
 
   const query = normalize(match[2])
-  if (!categories.length || !query) return null
+  if (!query) return null
 
   return { categories, query }
 }
