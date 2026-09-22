@@ -70,6 +70,7 @@ export const db = {
   surveys: internalDb.collection('surveys'),
   systemmessages: internalDb.collection('systemmessages'),
   tags: internalDb.collection('tags'),
+  templateSnippets: internalDb.collection('templateSnippets'),
   teamInvites: internalDb.collection('teamInvites'),
   tokens: internalDb.collection('tokens'),
   userAuditLogEntries: internalDb.collection('userAuditLogEntries'),
