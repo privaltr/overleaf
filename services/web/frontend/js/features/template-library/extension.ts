@@ -180,14 +180,10 @@ class TemplateMarkerPlugin {
     const content = match.template.content.replace(/\s+$/, '')
     if (!content) return
 
-    const marker = parseTemplateMarker(line.text)
-    if (!marker) return
-
-    const markerLine =
-      '%% UNFOLDED template: [' +
-      marker.categories.join(',') +
-      '] ' +
-      marker.query
+    const markerLine = line.text.replace(
+      /^(\s*%%\s*)template:/i,
+      '$1UNFOLDED template:'
+    )
 
     this.view.dispatch({
       changes: {
