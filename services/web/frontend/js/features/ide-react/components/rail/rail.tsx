@@ -7,6 +7,7 @@ import {
   useRailContext,
 } from '@/features/ide-react/context/rail-context'
 import FileTreeOutlinePanel from '@/features/file-tree/components/file-tree-outline-panel'
+import TemplateLibraryPanel from '@/features/template-library/components/template-library-panel'
 import ChatPane from '@/features/chat/components/chat-pane'
 import ChatIndicator from '@/features/chat/components/chat-indicator'
 import getMeta from '@/utils/meta'
@@ -120,6 +121,12 @@ export const RailLayout = () => {
         title: t('integrations'),
         component: <IntegrationsPanel />,
         hide: !isOverleaf && !gitBridgeEnabled && !githubSyncEnabled && !zoteroEnabled,
+      },
+      {
+        key: 'template-library',
+        icon: 'content_copy',
+        title: t('templates'),
+        component: <TemplateLibraryPanel />,
       },
       {
         key: 'review-panel',
