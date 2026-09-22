@@ -1,9 +1,4 @@
-import {
-  RangeSet,
-  RangeSetBuilder,
-  StateEffect,
-  StateField,
-} from '@codemirror/state'
+import { RangeSet, RangeSetBuilder } from '@codemirror/state'
 import {
   EditorView,
   GutterMarker,
@@ -11,14 +6,15 @@ import {
   ViewUpdate,
   gutter,
 } from '@codemirror/view'
-import { invertedEffects } from '@codemirror/commands'
 import { getTemplates, TemplateSnippet } from './util/api'
 
 const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/
+const FOLDED_MARKER_SUFFIX_RE = /\s+\[folded\]\s*$/i
 
 type TemplateMatch = {
   lineFrom: number
   template: TemplateSnippet
+  folded: boolean
 }
 
 function normalize(value: string) {
@@ -34,10 +30,14 @@ function parseTemplateMarker(lineText: string) {
     .map(category => normalize(category))
     .filter(Boolean)
 
-  const query = normalize(match[2])
+  const rawQuery = match[2]
+  const folded = FOLDED_MARKER_SUFFIX_RE.test(rawQuery)
+  const query = normalize(
+    folded ? rawQuery.replace(FOLDED_MARKER_SUFFIX_RE, '') : rawQuery
+  )
   if (!query) return null
 
-  return { categories, query }
+  return { categories, query, folded }
 }
 
 function findTemplateMatch(
@@ -97,54 +97,6 @@ class TemplateMarker extends GutterMarker {
   }
 }
 
-type FulfilledTemplatePositions = Set<number>
-
-const fulfillTemplate = StateEffect.define<number>()
-const unfulfillTemplate = StateEffect.define<number>()
-
-const templateMarkerState = StateField.define<FulfilledTemplatePositions>({
-  create() {
-    return new Set()
-  },
-  update(value, transaction) {
-    let nextValue = value
-
-    if (transaction.docChanged) {
-      nextValue = new Set(
-        Array.from(value, position =>
-          transaction.changes.mapPos(position)
-        )
-      )
-    }
-
-    for (const effect of transaction.effects) {
-      if (effect.is(fulfillTemplate)) {
-        nextValue = nextValue === value ? new Set(value) : nextValue
-        nextValue.add(effect.value)
-      } else if (effect.is(unfulfillTemplate)) {
-        nextValue = nextValue === value ? new Set(value) : nextValue
-        nextValue.delete(effect.value)
-      }
-    }
-
-    return nextValue
-  },
-})
-
-const templateMarkerHistory = invertedEffects.of(transaction => {
-  const effects: StateEffect<number>[] = []
-
-  for (const effect of transaction.effects) {
-    if (effect.is(fulfillTemplate)) {
-      effects.push(unfulfillTemplate.of(effect.value))
-    } else if (effect.is(unfulfillTemplate)) {
-      effects.push(fulfillTemplate.of(effect.value))
-    }
-  }
-
-  return effects
-})
-
 class TemplateMarkerPlugin {
   templates: TemplateSnippet[] = []
 
@@ -192,14 +144,17 @@ class TemplateMarkerPlugin {
     const template = findTemplateMatch(this.templates, line.text)
     if (!template) return null
 
+    const marker = parseTemplateMarker(line.text)
+    if (!marker) return null
+
     return {
       lineFrom,
       template,
+      folded: marker.folded,
     }
   }
 
   private createMarkers() {
-    const fulfilledPositions = this.view.state.field(templateMarkerState)
     const builder = new RangeSetBuilder<TemplateMarker>()
 
     for (
@@ -209,15 +164,13 @@ class TemplateMarkerPlugin {
     ) {
       const line = this.view.state.doc.line(lineNumber)
       const template = findTemplateMatch(this.templates, line.text)
-      if (!template) continue
+      const marker = parseTemplateMarker(line.text)
+      if (!template || !marker) continue
 
       builder.add(
         line.from,
         line.from,
-        new TemplateMarker(
-          template,
-          fulfilledPositions.has(line.from)
-        )
+        new TemplateMarker(template, marker.folded)
       )
     }
 
@@ -226,20 +179,19 @@ class TemplateMarkerPlugin {
 
   private insert(match: TemplateMatch) {
     const line = this.view.state.doc.lineAt(match.lineFrom)
-    const fulfilledPositions = this.view.state.field(templateMarkerState)
-
-    if (fulfilledPositions.has(line.from)) return
+    if (match.folded) return
 
     const content = match.template.content.replace(/\s+$/, '')
     if (!content) return
 
+    const markerLine = line.text.trimEnd() + ' [folded]'
+
     this.view.dispatch({
       changes: {
-        from: line.to,
+        from: line.from,
         to: line.to,
-        insert: '\n' + content + '\n',
+        insert: markerLine + '\n' + content + '\n',
       },
-      effects: fulfillTemplate.of(line.from),
     })
 
     this.view.focus()
@@ -346,8 +298,6 @@ export const templateInsertion = () => [
       },
     }
   }),
-  templateMarkerState,
-  templateMarkerHistory,
   templateMarkerPlugin,
   templateMarkerGutter,
   templateMarkerTheme,
