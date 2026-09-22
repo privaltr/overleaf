@@ -8,8 +8,7 @@ import {
 } from '@codemirror/view'
 import { getTemplates, TemplateSnippet } from './util/api'
 
-const TEMPLATE_MARKER_RE = /^\s*%%\s*template:\s*\[([^\]]*)\]\s*(.*?)\s*$/
-const FOLDED_MARKER_SUFFIX_RE = /\s+\[folded\]\s*$/i
+const TEMPLATE_MARKER_RE = /^\s*%%\s*(UNFOLDED\s+)?template:\s*\[([^\]]*)\]\s*(.*?)\s*$/i
 
 type TemplateMatch = {
   lineFrom: number
@@ -25,19 +24,16 @@ function parseTemplateMarker(lineText: string) {
   const match = lineText.match(TEMPLATE_MARKER_RE)
   if (!match) return null
 
-  const categories = match[1]
+  const unfolded = Boolean(match[1])
+  const categories = match[2]
     .split(',')
     .map(category => normalize(category))
     .filter(Boolean)
 
-  const rawQuery = match[2]
-  const folded = FOLDED_MARKER_SUFFIX_RE.test(rawQuery)
-  const query = normalize(
-    folded ? rawQuery.replace(FOLDED_MARKER_SUFFIX_RE, '') : rawQuery
-  )
+  const query = normalize(match[3])
   if (!query) return null
 
-  return { categories, query, folded }
+  return { categories, query, folded: unfolded }
 }
 
 function findTemplateMatch(
@@ -184,7 +180,14 @@ class TemplateMarkerPlugin {
     const content = match.template.content.replace(/\s+$/, '')
     if (!content) return
 
-    const markerLine = line.text.trimEnd() + ' [folded]'
+    const marker = parseTemplateMarker(line.text)
+    if (!marker) return
+
+    const markerLine =
+      '%% UNFOLDED template: [' +
+      marker.categories.join(',') +
+      '] ' +
+      marker.query
 
     this.view.dispatch({
       changes: {
