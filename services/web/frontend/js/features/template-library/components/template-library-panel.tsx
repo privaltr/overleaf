@@ -1,6 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from 'react'
 import '../template-library-panel.scss'
-import { Button, ButtonGroup, Dropdown, Form, Col, Row } from 'react-bootstrap'
+import { Button, ButtonGroup, Dropdown, Form, Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-header'
 import OLFormControl from '@/shared/components/ol/ol-form-control'
@@ -15,6 +21,9 @@ import {
   getTemplates,
   TemplateSnippet,
   TemplateSnippetInput,
+  TemplateLibraryExport,
+  TemplateLibraryImportResult,
+  importTemplates,
   updateTemplate,
 } from '../util/api'
 import { relevanceScore } from '../util/search'
@@ -24,6 +33,15 @@ const EMPTY_DRAFT: TemplateSnippetInput = {
   description: '',
   content: '',
   categories: [],
+}
+
+type ImportPreview = {
+  fileName: string
+  payload: TemplateLibraryExport
+  total: number
+  added: number
+  replaced: number
+  skipped: number
 }
 
 export default function TemplateLibraryPanel() {
@@ -38,6 +56,12 @@ export default function TemplateLibraryPanel() {
   const [categoryInput, setCategoryInput] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [importPreview, setImportPreview] = useState<ImportPreview | null>(
+    null
+  )
+  const [importResult, setImportResult] =
+    useState<TemplateLibraryImportResult | null>(null)
+  const importInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     if (anonymous) return
@@ -81,6 +105,167 @@ export default function TemplateLibraryPanel() {
       })
       .map(result => result.template)
   }, [templates, query, categoriesFilter])
+
+
+  const exportTemplates = async () => {
+    setBusy(true)
+    setError('')
+    setImportResult(null)
+
+    try {
+      const allTemplates = await getTemplates()
+      setTemplates(allTemplates)
+
+      const payload: TemplateLibraryExport = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        templates: allTemplates,
+      }
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {
+        type: 'application/json',
+      })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      const date = new Date().toISOString().slice(0, 10)
+      link.download = `overleaf-template-library-${date}.json`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (exportError) {
+      setError(
+        getUserFacingMessage(exportError) || 'Unable to export templates.'
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const parseImportFile = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    setBusy(true)
+    setError('')
+    setImportResult(null)
+
+    try {
+      const parsed = JSON.parse(await file.text()) as Partial<TemplateLibraryExport>
+
+      if (
+        parsed.version !== 1 ||
+        !Array.isArray(parsed.templates) ||
+        typeof parsed.exportedAt !== 'string'
+      ) {
+        throw new Error('This is not a valid template library export.')
+      }
+
+      const validTemplates = parsed.templates.every(template => {
+        if (!template || typeof template !== 'object') return false
+
+        const candidate = template as Partial<TemplateSnippet>
+        return (
+          typeof candidate.id === 'string' &&
+          typeof candidate.title === 'string' &&
+          typeof candidate.description === 'string' &&
+          typeof candidate.content === 'string' &&
+          Array.isArray(candidate.categories) &&
+          candidate.categories.every(category => typeof category === 'string') &&
+          typeof candidate.createdAt === 'string' &&
+          typeof candidate.updatedAt === 'string' &&
+          Number.isFinite(Date.parse(candidate.createdAt)) &&
+          Number.isFinite(Date.parse(candidate.updatedAt))
+        )
+      })
+
+      if (!validTemplates) {
+        throw new Error('This is not a valid template library export.')
+      }
+
+      const payload = parsed as TemplateLibraryExport
+      const latestTemplates = await getTemplates()
+      setTemplates(latestTemplates)
+
+      const currentById = new Map(
+        latestTemplates.map(template => [template.id, template])
+      )
+      const latestImportedById = new Map<string, TemplateSnippet>()
+
+      for (const template of payload.templates) {
+        const previous = latestImportedById.get(template.id)
+        if (
+          !previous ||
+          new Date(template.updatedAt).getTime() >
+            new Date(previous.updatedAt).getTime()
+        ) {
+          latestImportedById.set(template.id, template)
+        }
+      }
+
+      let added = 0
+      let replaced = 0
+      let skipped = 0
+
+      for (const template of latestImportedById.values()) {
+        const current = currentById.get(template.id)
+
+        if (!current) {
+          added++
+        } else if (
+          new Date(template.updatedAt).getTime() >
+          new Date(current.updatedAt).getTime()
+        ) {
+          replaced++
+        } else {
+          skipped++
+        }
+      }
+
+      setImportPreview({
+        fileName: file.name,
+        payload: {
+          ...payload,
+          templates: Array.from(latestImportedById.values()),
+        },
+        total: latestImportedById.size,
+        added,
+        replaced,
+        skipped,
+      })
+    } catch (importError) {
+      setError(
+        importError instanceof Error
+          ? importError.message
+          : 'Unable to read template import.'
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const confirmImport = async () => {
+    if (!importPreview) return
+
+    setBusy(true)
+    setError('')
+
+    try {
+      const result = await importTemplates(importPreview.payload)
+      const latestTemplates = await getTemplates()
+      setTemplates(latestTemplates)
+      setImportPreview(null)
+      setImportResult(result)
+      window.dispatchEvent(new CustomEvent('ui:templates-changed'))
+    } catch (importError) {
+      setError(
+        getUserFacingMessage(importError) || 'Unable to import templates.'
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
 
   const closeEditor = () => {
     setDraft(null)
@@ -446,6 +631,14 @@ export default function TemplateLibraryPanel() {
       />
 
       <div className="border-bottom template-library-toolbar">
+        <input
+          ref={importInputRef}
+          type="file"
+          accept=".json,application/json"
+          className="d-none"
+          onChange={parseImportFile}
+        />
+
         <div className="template-library-search-row">
           <Form.Control
             className="template-library-search-input"
@@ -478,6 +671,18 @@ export default function TemplateLibraryPanel() {
             <Dropdown.Menu align="end">
               <Dropdown.Item onClick={startCreate}>
                 {t('new')}
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => importInputRef.current?.click()}
+                disabled={busy}
+              >
+                Import Templates
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => void exportTemplates()}
+                disabled={busy}
+              >
+                Export Templates
               </Dropdown.Item>
 
               <Dropdown.Divider />
@@ -527,6 +732,15 @@ export default function TemplateLibraryPanel() {
           </Dropdown>
         </div>
       </div>
+
+      {importResult && (
+        <div className="px-3 pt-2 template-library-import-result">
+          <div className="alert alert-success mb-0">
+            Imported {importResult.total} templates: {importResult.added} added,{' '}
+            {importResult.replaced} replaced, {importResult.skipped} skipped.
+          </div>
+        </div>
+      )}
 
       <div className="overflow-auto flex-grow-1 p-3 template-library-list">
         {error && <div className="alert alert-danger">{error}</div>}
@@ -605,3 +819,56 @@ export default function TemplateLibraryPanel() {
     </div>
   )
 }
+
+      <Modal
+        show={Boolean(importPreview)}
+        onHide={() => {
+          if (!busy) setImportPreview(null)
+        }}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Import templates</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {importPreview && (
+            <>
+              <div className="small text-muted mb-3">
+                {importPreview.fileName}
+              </div>
+              <div className="d-flex justify-content-between mb-2">
+                <span>Templates found</span>
+                <strong>{importPreview.total}</strong>
+              </div>
+              <div className="d-flex justify-content-between mb-2">
+                <span>New templates</span>
+                <strong>{importPreview.added}</strong>
+              </div>
+              <div className="d-flex justify-content-between mb-2">
+                <span>Will be replaced</span>
+                <strong>{importPreview.replaced}</strong>
+              </div>
+              <div className="d-flex justify-content-between">
+                <span>Already newer</span>
+                <strong>{importPreview.skipped}</strong>
+              </div>
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setImportPreview(null)}
+            disabled={busy}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="success"
+            onClick={() => void confirmImport()}
+            disabled={busy}
+          >
+            {busy ? 'Importing…' : 'Import'}
+          </Button>
+        </Modal.Footer>
+      </Modal>

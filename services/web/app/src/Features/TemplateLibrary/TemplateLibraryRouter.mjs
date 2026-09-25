@@ -23,6 +23,13 @@ export default {
       TemplateLibraryController.create
     )
 
+    app.post(
+      '/template-library/templates/import',
+      AuthenticationController.requireLogin(),
+      RateLimiterMiddleware.rateLimit(writeRateLimiter),
+      TemplateLibraryController.importTemplates
+    )
+
     app.put(
       '/template-library/templates/:templateId',
       AuthenticationController.requireLogin(),

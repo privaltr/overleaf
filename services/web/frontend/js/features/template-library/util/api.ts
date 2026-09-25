@@ -17,6 +17,19 @@ export type TemplateSnippetInput = {
   categories: string[]
 }
 
+export type TemplateLibraryExport = {
+  version: 1
+  exportedAt: string
+  templates: TemplateSnippet[]
+}
+
+export type TemplateLibraryImportResult = {
+  total: number
+  added: number
+  replaced: number
+  skipped: number
+}
+
 export const getTemplates = () =>
   getJSON<TemplateSnippet[]>('/template-library/templates')
 
@@ -38,3 +51,8 @@ export const duplicateTemplate = (templateId: string) =>
   postJSON<TemplateSnippet>(
     `/template-library/templates/${templateId}/duplicate`
   )
+
+export const importTemplates = (body: TemplateLibraryExport) =>
+  postJSON<TemplateLibraryImportResult>('/template-library/templates/import', {
+    body,
+  })

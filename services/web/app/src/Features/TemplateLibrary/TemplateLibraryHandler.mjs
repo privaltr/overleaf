@@ -1,3 +1,4 @@
+import mongoose from '../../infrastructure/Mongoose.mjs'
 import { TemplateSnippet } from '../../models/TemplateSnippet.mjs'
 import { callbackify } from '@overleaf/promise-utils'
 
@@ -61,6 +62,99 @@ async function remove(userId, templateId) {
   })
 }
 
+async function importAll(userId, data) {
+  const latestById = new Map()
+
+  for (const template of data.templates) {
+    const previous = latestById.get(template.id)
+    if (
+      !previous ||
+      new Date(template.updatedAt).getTime() >
+        new Date(previous.updatedAt).getTime()
+    ) {
+      latestById.set(template.id, template)
+    }
+  }
+
+  const templates = Array.from(latestById.values())
+  const ids = templates.map(template => new mongoose.Types.ObjectId(template.id))
+  const existing = await TemplateSnippet.find({
+    user_id: userId,
+    _id: { $in: ids },
+  })
+    .select({
+      _id: 1,
+      updatedAt: 1,
+    })
+    .lean()
+
+  const existingById = new Map(
+    existing.map(template => [template._id.toString(), template])
+  )
+  const operations = []
+  let added = 0
+  let replaced = 0
+  let skipped = 0
+
+  for (const template of templates) {
+    const importedUpdatedAt = new Date(template.updatedAt)
+    const importedCreatedAt = new Date(template.createdAt)
+    const existingTemplate = existingById.get(template.id)
+
+    if (existingTemplate) {
+      if (
+        importedUpdatedAt.getTime() <=
+        new Date(existingTemplate.updatedAt).getTime()
+      ) {
+        skipped++
+        continue
+      }
+
+      operations.push({
+        updateOne: {
+          filter: {
+            _id: existingTemplate._id,
+            user_id: userId,
+          },
+          update: {
+            $set: {
+              ...prepareTemplate(template),
+              createdAt: importedCreatedAt,
+              updatedAt: importedUpdatedAt,
+            },
+          },
+        },
+      })
+      replaced++
+      continue
+    }
+
+    operations.push({
+      insertOne: {
+        document: {
+          _id: new mongoose.Types.ObjectId(template.id),
+          user_id: userId,
+          ...prepareTemplate(template),
+          createdAt: importedCreatedAt,
+          updatedAt: importedUpdatedAt,
+        },
+      },
+    })
+    added++
+  }
+
+  if (operations.length) {
+    await TemplateSnippet.collection.bulkWrite(operations)
+  }
+
+  return {
+    total: templates.length,
+    added,
+    replaced,
+    skipped,
+  }
+}
+
 async function duplicate(userId, templateId) {
   const source = await TemplateSnippet.findOne({
     _id: templateId,
@@ -87,6 +181,7 @@ export default {
     update,
     remove,
     duplicate,
+    importAll,
   },
   getAll: callbackify(getAll),
   create: callbackify(create),

@@ -46,6 +46,34 @@ const updateRequestSchema = z.object({
   body: templateBodySchema,
 })
 
+const dateSchema = z
+  .string()
+  .trim()
+  .refine(value => Number.isFinite(Date.parse(value)), 'Invalid date.')
+
+const templateImportSchema = z.strictObject({
+  id: zz.objectId(),
+  title: z.string().trim().min(1).max(MAX_TEMPLATE_TITLE_LENGTH),
+  description: z
+    .string()
+    .trim()
+    .max(MAX_TEMPLATE_DESCRIPTION_LENGTH)
+    .optional()
+    .default(''),
+  content: z.string().max(MAX_TEMPLATE_CONTENT_LENGTH),
+  categories: categoriesSchema,
+  createdAt: dateSchema,
+  updatedAt: dateSchema,
+})
+
+const importRequestSchema = z.object({
+  body: z.strictObject({
+    version: z.literal(1),
+    exportedAt: dateSchema,
+    templates: z.array(templateImportSchema).max(1000),
+  }),
+})
+
 const serialize = template => ({
   id: template._id.toString(),
   title: template.title,
@@ -107,10 +135,18 @@ async function duplicate(req, res) {
   res.status(201).json(serialize(template))
 }
 
+async function importTemplates(req, res) {
+  const { body } = parseReq(req, importRequestSchema)
+  const userId = SessionManager.getLoggedInUserId(req.session)
+  const result = await TemplateLibraryHandler.promises.importAll(userId, body)
+  res.json(result)
+}
+
 export default {
   getAll: expressify(getAll),
   create: expressify(create),
   update: expressify(update),
   remove: expressify(remove),
   duplicate: expressify(duplicate),
+  importTemplates: expressify(importTemplates),
 }
