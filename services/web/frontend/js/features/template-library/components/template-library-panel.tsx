@@ -255,6 +255,12 @@ export default function TemplateLibraryPanel() {
       const result = await importTemplates(importPreview.payload)
       const latestTemplates = await getTemplates()
       setTemplates(latestTemplates)
+
+      // Show the imported templates immediately, even when the user had
+      // an active search/category filter before starting the import.
+      setQuery('')
+      setCategoriesFilter([])
+
       setImportPreview(null)
       setImportResult(result)
       window.dispatchEvent(new CustomEvent('ui:templates-changed'))
