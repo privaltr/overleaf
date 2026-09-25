@@ -1,0 +1,43 @@
+name: Refresh Yarn lockfile
+
+on:
+  push:
+    branches:
+      - feature/template-library-cep
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Set up Yarn
+        run: |
+          corepack enable
+          corepack install -g yarn@4.14.1
+
+      - name: Refresh lockfile
+        run: yarn install --mode=skip-builds
+
+      - name: Commit lockfile
+        run: |
+          if git diff --quiet -- yarn.lock; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add yarn.lock
+          git commit -m "Refresh Yarn lockfile"
+          git push
