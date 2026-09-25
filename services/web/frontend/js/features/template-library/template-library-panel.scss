@@ -537,3 +537,13 @@
   border-color: transparent !important;
   box-shadow: none !important;
 }
+
+
+.template-library-import-result {
+  padding: 8px 8px 0;
+}
+
+.template-library-import-result .notification {
+  margin-bottom: 0;
+  font-size: var(--font-size-02);
+}

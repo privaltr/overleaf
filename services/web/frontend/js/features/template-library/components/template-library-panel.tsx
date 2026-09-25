@@ -12,6 +12,7 @@ import RailPanelHeader from '@/features/ide-react/components/rail/rail-panel-hea
 import OLFormControl from '@/shared/components/ol/ol-form-control'
 import OLButton from '@/shared/components/ol/ol-button'
 import OLIconButton from '@/shared/components/ol/ol-icon-button'
+import Notification from '@/shared/components/notification'
 import getMeta from '@/utils/meta'
 import { getUserFacingMessage } from '../../../infrastructure/fetch-json'
 import {
@@ -62,6 +63,13 @@ export default function TemplateLibraryPanel() {
   const [importResult, setImportResult] =
     useState<TemplateLibraryImportResult | null>(null)
   const importInputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    if (!importResult) return
+
+    const timeout = window.setTimeout(() => setImportResult(null), 5000)
+    return () => window.clearTimeout(timeout)
+  }, [importResult])
 
   useEffect(() => {
     if (anonymous) return
@@ -740,11 +748,28 @@ export default function TemplateLibraryPanel() {
       </div>
 
       {importResult && (
-        <div className="px-3 pt-2 template-library-import-result">
-          <div className="alert alert-success mb-0">
-            Imported {importResult.total} templates: {importResult.added} added,{' '}
-            {importResult.replaced} replaced, {importResult.skipped} skipped.
-          </div>
+        <div className="template-library-import-result">
+          <Notification
+            type="success"
+            iconPlacement="center"
+            ariaLive="polite"
+            isDismissible
+            onDismiss={() => setImportResult(null)}
+            title="Templates imported"
+            content={
+              <>
+                {importResult.total} {importResult.total === 1 ? 'template' : 'templates'} imported
+                {importResult.added > 0 && <> · {importResult.added} added</>}
+                {importResult.replaced > 0 && (
+                  <> · {importResult.replaced} replaced</>
+                )}
+                {importResult.skipped > 0 && (
+                  <> · {importResult.skipped} already up to date</>
+                )}
+                .
+              </>
+            }
+          />
         </div>
       )}
 
