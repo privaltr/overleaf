@@ -78,6 +78,7 @@ async function importAll(userId, data) {
 
   const templates = Array.from(latestById.values())
   const ids = templates.map(template => new mongoose.Types.ObjectId(template.id))
+  const mongoUserId = new mongoose.Types.ObjectId(userId.toString())
   const existing = await TemplateSnippet.find({
     user_id: userId,
     _id: { $in: ids },
@@ -114,7 +115,7 @@ async function importAll(userId, data) {
         updateOne: {
           filter: {
             _id: existingTemplate._id,
-            user_id: userId,
+            user_id: mongoUserId,
           },
           update: {
             $set: {
@@ -133,7 +134,7 @@ async function importAll(userId, data) {
       insertOne: {
         document: {
           _id: new mongoose.Types.ObjectId(template.id),
-          user_id: userId,
+          user_id: mongoUserId,
           ...prepareTemplate(template),
           createdAt: importedCreatedAt,
           updatedAt: importedUpdatedAt,
