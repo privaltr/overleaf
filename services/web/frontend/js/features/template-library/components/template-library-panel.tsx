@@ -816,9 +816,6 @@ export default function TemplateLibraryPanel() {
           ))
         )}
       </div>
-    </div>
-  )
-}
 
       <Modal
         show={Boolean(importPreview)}
@@ -872,3 +869,6 @@ export default function TemplateLibraryPanel() {
           </Button>
         </Modal.Footer>
       </Modal>
+    </div>
+  )
+}
